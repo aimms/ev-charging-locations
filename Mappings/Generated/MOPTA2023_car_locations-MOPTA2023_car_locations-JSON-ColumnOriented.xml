@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<AimmsJSONMapping>
+	<ObjectMapping>
+		<ColumnMapping name="columns">
+			<RowMapping name="Location" binds-to="l" />
+			<RowMapping name="X" maps-to="LocationX(l)" />
+			<RowMapping name="Y" maps-to="LocationY(l)" />
+		</ColumnMapping>
+	</ObjectMapping>
+</AimmsJSONMapping>

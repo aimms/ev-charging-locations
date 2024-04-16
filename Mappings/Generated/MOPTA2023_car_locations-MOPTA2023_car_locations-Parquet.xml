@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<AimmsParquetMapping>
+	<RowMapping name="MOPTA2023_car_locations">
+		<ColumnMapping name="Location" binds-to="l" />
+		<ColumnMapping name="X" maps-to="LocationX(l)" />
+		<ColumnMapping name="Y" maps-to="LocationY(l)" />
+	</RowMapping>
+</AimmsParquetMapping>

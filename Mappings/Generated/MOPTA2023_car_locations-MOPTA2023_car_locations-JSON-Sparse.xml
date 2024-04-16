@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<AimmsJSONMapping>
+	<ObjectMapping>
+		<ArrayMapping name="rows">
+			<ObjectMapping>
+				<ValueMapping name="Location" binds-to="l" />
+				<ValueMapping name="X" maps-to="LocationX(l)" />
+				<ValueMapping name="Y" maps-to="LocationY(l)" />
+			</ObjectMapping>
+		</ArrayMapping>
+	</ObjectMapping>
+</AimmsJSONMapping>
