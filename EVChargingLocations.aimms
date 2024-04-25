@@ -2,6 +2,7 @@
 <References AIMMS_Version="24.3.2.2 (x64)">
 	<MainProject Path="MainProject" />
 	<Library System="true" Path="AimmsPro" />
-	<Library System="true" Path="AimmsWebUI" />
 	<RepositoryLibrary UUID="BDF54E1C-AF05-4D77-856C-F3C05F20FFB8" Name="AimmsDEX" Version="24.1.1.4" />
+	<RepositoryLibrary UUID="69378F70-E906-486F-8F2C-1D606AEB9669" Name="WebUI" Version="24.4.1.1" />
+	<Library Path="libs/UserInterface" />
 </References>

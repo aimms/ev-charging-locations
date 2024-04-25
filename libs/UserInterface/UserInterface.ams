@@ -1,0 +1,94 @@
+## ams_version=1.0
+
+LibraryModule UserInterface {
+	Prefix: ui;
+	Interface: UserInterface;
+	StringParameter sp_def_readOnly {
+		Definition: "readonly";
+	}
+	StringParameter sp_def_logo {
+		Definition: "aimms_logo.png";
+	}
+	Section System {
+		DeclarationSection System_Workflow {
+			StringParameter sp_systemWorkflow {
+				IndexDomain: (webui::indexWorkflowOrder,webui::indexWorkflowSpec);
+				Definition: data { ( 1, title ) : "" };
+			}
+			StringParameter sp_systemWorkflowSteps {
+				IndexDomain: (webui::indexWorkflowOrder,webui::indexNoOfPages,webui::indexWorkflowPageSpec);
+				Definition: {
+					data 
+					{ ( 1, 1, displayText       ) : "Welcome",
+					  ( 1, 1, icon              ) : "aimms-home2",
+					  ( 1, 1, pageId            ) : "home",
+					  ( 1, 1, tooltip           ) : "Welcome ",
+					  ( 1, 1, workflowPageState ) : "Active",
+					  ( 1, 2, displayText       ) : "Problem",
+					  ( 1, 2, icon              ) : "aimms-book",
+					  ( 1, 2, pageId            ) : "problem",
+					  ( 1, 2, tooltip           ) : "Short statement about the problem",
+					  ( 1, 2, workflowPageState ) : "Active",
+					  ( 1, 3, displayText       ) : "Control Panel",
+					  ( 1, 3, icon              ) : "aimms-equalizer2",
+					  ( 1, 3, pageId            ) : "control_panel",
+					  ( 1, 3, tooltip           ) : "Overview of all the sets",
+					  ( 1, 3, workflowPageState ) : "Active",
+					  ( 1, 4, displayText       ) : "EV Allocation",
+					  ( 1, 4, icon              ) : "aimms-equalizer2",
+					  ( 1, 4, pageId            ) : "allocation",
+					  ( 1, 4, tooltip           ) : "Overview of all the data",
+					  ( 1, 4, workflowPageState ) : "Active",
+					  ( 1, 5, displayText       ) : "Results",
+					  ( 1, 5, icon              ) : "aimms-location5",
+					  ( 1, 5, pageId            ) : "results",
+					  ( 1, 5, tooltip           ) : "Location data",
+					  ( 1, 5, workflowPageState ) : "Active" }
+				}
+			}
+			StringParameter sp_systemWorkflowFoldingStates {
+				IndexDomain: (webui::indexWorkflowOrder,webui::indexNoOfPages,webui::indexOpenCloseProps);
+			}
+		}
+		DeclarationSection System_Page_Action {
+			StringParameter sp_systemSecondaryActions {
+				IndexDomain: (webui::indexPageExtension,webui::indexPageActionSpec);
+			}
+		}
+	}
+	Section Pages {
+		Section Control_Panel_Page;
+		Section Allocation_Page;
+		Section Results_Page;
+	}
+	Procedure LibraryInitialization {
+		Comment: "Add initialization statements here that do not require any other library being initialized already.";
+	}
+	Procedure PostLibraryInitialization {
+		Comment: {
+			"Add initialization statements here that require another library to be initialized already,
+			or add statements that require the Data Management module to be initialized."
+		}
+	}
+	Procedure PreLibraryTermination {
+		Body: {
+			return 1;
+		}
+		Comment: {
+			"Add termination statements here that require all other libraries to be still alive.
+			Return 1 if you allow the termination sequence to continue.
+			Return 0 if you want to cancel the termination sequence."
+		}
+	}
+	Procedure LibraryTermination {
+		Body: {
+			return 1;
+		}
+		Comment: {
+			"Add termination statements here that do not require other libraries to be still alive.
+			Return 1 to allow the termination sequence to continue.
+			Return 0 if you want to cancel the termination sequence.
+			It is recommended to only use the procedure PreLibraryTermination to cancel the termination sequence and let this procedure always return 1."
+		}
+	}
+}

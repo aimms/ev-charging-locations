@@ -1,6 +1,6 @@
 ## ams_version=1.0
 
-Model Main_PSO {
+Model Main_EVChargingLocations {
 	Section Data_Processing {
 		Procedure Read_Location_Data {
 			Body: {

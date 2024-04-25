@@ -1,0 +1,158 @@
+{
+  "version": "4.67.0",
+  "application": {
+    "aimms.widget.type": {
+      "literal": "application"
+    },
+    "browsername": {
+      "aimms": {
+        "contents": [
+          "webui::ClientBrowserName"
+        ]
+      }
+    },
+    "browsertimezone": {
+      "aimms": {
+        "contents": [
+          "webui::BrowserTimeZone"
+        ]
+      }
+    },
+    "ignoredst": {
+      "aimms": {
+        "contents": [
+          "webui::IgnoreDST"
+        ]
+      }
+    },
+    "pages": {
+      "literal": {
+        "name": "root",
+        "slug": "root",
+        "children": [
+          {
+            "name": "Main Project",
+            "slug": "main_project",
+            "children": [
+              {
+                "name": "Welcome",
+                "slug": "home",
+                "type": "pagev2-grid",
+                "children": []
+              },
+              {
+                "name": "Problem",
+                "type": "pagev2-grid",
+                "slug": "problem",
+                "children": []
+              },
+              {
+                "name": "Control Panel",
+                "type": "pagev2-grid",
+                "slug": "control_panel",
+                "children": []
+              },
+              {
+                "name": "Allocation",
+                "type": "pagev2-grid",
+                "slug": "allocation",
+                "children": []
+              },
+              {
+                "name": "Results",
+                "type": "pagev2-grid",
+                "slug": "results",
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "theme.classic": {
+      "literal": "NOT_ALLOWED"
+    },
+    "timezone": {
+      "aimms": {
+        "contents": [
+          "webui::DisplayTimeZone"
+        ]
+      }
+    },
+    "timezone.dst.readonly": {
+      "aimms": {
+        "contents": [
+          "webui::DefaultDSTSettingForDisplayTimeZone"
+        ]
+      }
+    },
+    "workflows.configuration": {
+      "literal": {
+        "identifier": "ui::sp_systemWorkflowSteps",
+        "slice": [
+          {
+            "index": "webui::indexWorkflowOrder",
+            "type": "free",
+            "value": "webui::indexWorkflowOrder"
+          },
+          {
+            "index": "webui::indexNoOfPages",
+            "type": "free",
+            "value": "webui::indexNoOfPages"
+          },
+          {
+            "index": "webui::indexWorkflowPageSpec",
+            "type": "free",
+            "value": "webui::indexWorkflowPageSpec"
+          }
+        ]
+      }
+    },
+    "workflows.information": {
+      "aimms": {
+        "contents": [
+          "ui::sp_systemWorkflow"
+        ],
+        "slices": [
+          {
+            "identifier": "ui::sp_systemWorkflow",
+            "slice": [
+              {
+                "index": "webui::indexWorkflowOrder",
+                "type": "free",
+                "value": "webui::indexWorkflowOrder"
+              },
+              {
+                "index": "webui::indexWorkflowSpec",
+                "type": "free",
+                "value": "webui::indexWorkflowSpec"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "workflows.state.openClose": {
+      "literal": {
+        "identifier": "ui::sp_systemWorkflowFoldingStates",
+        "slice": [
+          {
+            "index": "webui::indexWorkflowOrder",
+            "type": "free",
+            "value": "webui::indexWorkflowOrder"
+          },
+          {
+            "index": "webui::indexNoOfPages",
+            "type": "free",
+            "value": "webui::indexNoOfPages"
+          },
+          {
+            "index": "webui::indexOpenCloseProps",
+            "type": "free",
+            "value": "webui::indexOpenCloseProps"
+          }
+        ]
+      }
+    }
+  }
+}

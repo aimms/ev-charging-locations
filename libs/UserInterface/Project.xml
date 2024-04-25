@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<LibraryProject AimmsVersion="24.3.2.2 unicode x64" ProjectUUID="E067DA5C-7F55-4B8E-8D98-75CC6086553E">
+	<ModelFileName>UserInterface.ams</ModelFileName>
+	<Prefix>ui</Prefix>
+	<DisplayName>UserInterface</DisplayName>
+</LibraryProject>
