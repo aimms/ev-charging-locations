@@ -2,6 +2,7 @@
 
 Model Main_EVChargingLocations {
 	Section Data_Processing {
+		Comment: "Read in the location data and assign location indices and parameters.";
 		Procedure Read_Location_Data {
 			Body: {
 				dex::GenerateDatasetMappings;
@@ -37,6 +38,7 @@ Model Main_EVChargingLocations {
 		}
 	}
 	Section Global_Model_Parameters {
+		Comment: "This section contains costs for different parts of the system and also sets some of the key parameters in the particle swarm optimization model.";
 		DeclarationSection Costs {
 			Parameter MaintenanceCost {
 				Definition: 500;
@@ -126,6 +128,10 @@ Model Main_EVChargingLocations {
 		}
 	}
 	Section Model_Components {
+		Comment: {
+			"This section contains the definition of the key components of the PSO model: position, velocity, local best, global best. 
+			Additionally, the weightings (hyperparameters) for these sections are included in this section."
+		}
 		DeclarationSection Solution_Declaration {
 			Parameter CurrentSolutionX {
 				IndexDomain: (i,p);
@@ -202,6 +208,7 @@ Model Main_EVChargingLocations {
 		}
 	}
 	Section Initiate_Procedures {
+		Comment: "This section contains procedures that are necessary to initiate the PSO algorithm, such as spawning initial locations with initial velocities.";
 		DeclarationSection Spawning_Declaration {
 			Parameter XY_spawn_region {
 				Text: "Region in which particles each particle is spawned in an individual.";
@@ -254,6 +261,7 @@ Model Main_EVChargingLocations {
 		}
 	}
 	Section PSO_Model {
+		Comment: "This section contains procedures that align with the main operations within PSO.";
 		Procedure Variation_Procedures {
 			Body: {
 				! Apply the velocity update
@@ -346,7 +354,8 @@ Model Main_EVChargingLocations {
 			}
 		}
 	}
-	Section Optimization_Model {
+	Section Assignment_Model {
+		Comment: "This section is focused on the assignment aspect of the algorithm. Assigning vehicles to stations. A MIP is included, however, the heuristic (KNN) is preferred.";
 		DeclarationSection MIP_Declaration {
 			Parameter Distances_domain {
 				IndexDomain: (p,l,i);
@@ -549,6 +558,7 @@ Model Main_EVChargingLocations {
 		}
 	}
 	Section Results_Section {
+		Comment: "Section to record and wrangle different results for display on the UI.";
 		Section Generational_Results {
 			DeclarationSection Fitness {
 				Parameter GenerationalFitness {
