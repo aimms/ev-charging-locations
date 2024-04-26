@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<AimmsParquetMapping>
+	<RowMapping name="Locations">
+		<ColumnMapping name="Location" binds-to="i_loc" />
+		<ColumnMapping name="Longitude" maps-to="p_longitude(i_loc)" />
+		<ColumnMapping name="Latitude" maps-to="p_latitude(i_loc)" />
+	</RowMapping>
+</AimmsParquetMapping>

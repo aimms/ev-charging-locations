@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<AimmsDatabaseMapping>
+	<TableMapping name="Locations">
+		<RowMapping>
+			<ColumnMapping name="Location" binds-to="i_loc" />
+			<ColumnMapping name="Longitude" maps-to="p_longitude(i_loc)" />
+			<ColumnMapping name="Latitude" maps-to="p_latitude(i_loc)" />
+		</RowMapping>
+	</TableMapping>
+</AimmsDatabaseMapping>

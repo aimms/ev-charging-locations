@@ -3,9 +3,9 @@
 	<ObjectMapping>
 		<ArrayMapping name="rows">
 			<ObjectMapping dense-children="1">
-				<ValueMapping name="Location" binds-to="l" />
-				<ValueMapping name="X" maps-to="LocationX(l)" />
-				<ValueMapping name="Y" maps-to="LocationY(l)" />
+				<ValueMapping name="Location" binds-to="i_loc" />
+				<ValueMapping name="Longitude" maps-to="p_longitude(i_loc)" />
+				<ValueMapping name="Latitude" maps-to="p_latitude(i_loc)" />
 			</ObjectMapping>
 		</ArrayMapping>
 	</ObjectMapping>

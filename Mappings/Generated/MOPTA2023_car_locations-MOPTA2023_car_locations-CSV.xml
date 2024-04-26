@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<AimmsCSVMapping dense-children="1">
-	<RowMapping name="MOPTA2023_car_locations">
-		<ColumnMapping name="Location" binds-to="l" />
-		<ColumnMapping name="X" maps-to="LocationX(l)" />
-		<ColumnMapping name="Y" maps-to="LocationY(l)" />
-	</RowMapping>
-</AimmsCSVMapping>

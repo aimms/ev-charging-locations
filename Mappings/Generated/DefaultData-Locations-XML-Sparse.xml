@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<AimmsXMLMapping>
+	<ElementObjectMapping name="Locations">
+		<ElementObjectMapping name="Row">
+			<AttributeMapping name="Location" binds-to="i_loc" />
+			<ElementValueMapping name="Longitude" maps-to="p_longitude(i_loc)" />
+			<ElementValueMapping name="Latitude" maps-to="p_latitude(i_loc)" />
+		</ElementObjectMapping>
+	</ElementObjectMapping>
+</AimmsXMLMapping>

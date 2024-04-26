@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<AimmsExcelMapping dense-children="1">
+	<ExcelSheetMapping name="Locations">
+		<RowMapping>
+			<ColumnMapping name="Location" binds-to="i_loc" />
+			<ColumnMapping name="Longitude" maps-to="p_longitude(i_loc)" />
+			<ColumnMapping name="Latitude" maps-to="p_latitude(i_loc)" />
+		</RowMapping>
+	</ExcelSheetMapping>
+</AimmsExcelMapping>

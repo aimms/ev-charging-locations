@@ -154,5 +154,178 @@
         ]
       }
     }
+  },
+  "layouts/custom_c678b0d9-e86b-4145-978c-04818fcf5c1d": {
+    "definition": {
+      "literal": {
+        "componentName": "Grid",
+        "props": {
+          "gridTemplateColumns": "1fr 1fr",
+          "gridTemplateRows": "1fr",
+          "gridTemplateAreas": "\"area-a area-b\""
+        },
+        "items": [
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-a",
+              "name": "Area A",
+              "gridAutoFlow": "row"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-b",
+              "name": "Area B",
+              "gridAutoFlow": "column"
+            }
+          }
+        ]
+      }
+    },
+    "displayName": {
+      "literal": "CustomControlPanel"
+    }
+  },
+  "pages/control_panel": {
+    "aimms.widget.type": {
+      "literal": "pagev2-grid"
+    },
+    "layoutId": {
+      "literal": "custom_c678b0d9-e86b-4145-978c-04818fcf5c1d"
+    }
+  },
+  "pages/results": {
+    "aimms.widget.type": {
+      "literal": "pagev2-grid"
+    },
+    "bindings": {
+      "literal": [
+        {
+          "widgetUri": "map",
+          "gridArea": "area-a",
+          "dndId": "Unassigned widgetsmap"
+        }
+      ]
+    },
+    "layoutId": {
+      "literal": "Layout10"
+    },
+    "widgets": {
+      "literal": [
+        {
+          "uri": "map",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        }
+      ]
+    }
+  },
+  "widgets/map": {
+    "aimms.widget.type": {
+      "literal": "map-v2"
+    },
+    "arcs.__display_order__": {
+      "literal": [
+        "arcs.0"
+      ]
+    },
+    "center.latitude": {
+      "literal": 40.65563912141411
+    },
+    "center.longitude": {
+      "literal": -77.16578253333995
+    },
+    "name": {
+      "literal": "map"
+    },
+    "nodes.__display_order__": {
+      "literal": [
+        "nodes.0"
+      ]
+    },
+    "nodes.0": {
+      "aimms": {
+        "contents": [
+          "p_longitude",
+          "p_latitude"
+        ],
+        "slices": [
+          {
+            "identifier": "p_longitude",
+            "slice": [
+              {
+                "index": "i_loc",
+                "type": "free",
+                "value": "i_loc"
+              }
+            ]
+          },
+          {
+            "identifier": "p_latitude",
+            "slice": [
+              {
+                "index": "i_loc",
+                "type": "free",
+                "value": "i_loc"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "nodes.0.index": {
+      "literal": {
+        "identifier": "i_loc"
+      }
+    },
+    "nodes.0.latitude": {
+      "literal": {
+        "identifier": "p_latitude",
+        "slice": [
+          {
+            "index": "i_loc",
+            "type": "free",
+            "value": "i_loc"
+          }
+        ]
+      }
+    },
+    "nodes.0.longitude": {
+      "literal": {
+        "identifier": "p_longitude",
+        "slice": [
+          {
+            "index": "i_loc",
+            "type": "free",
+            "value": "i_loc"
+          }
+        ]
+      }
+    },
+    "title": {
+      "literal": "gdx"
+    },
+    "views": {
+      "literal": {}
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0",
+        "views.1"
+      ]
+    },
+    "views.0.type": {
+      "literal": "view"
+    },
+    "views.1.type": {
+      "literal": "template"
+    },
+    "zoom": {
+      "literal": 7
+    }
   }
 }

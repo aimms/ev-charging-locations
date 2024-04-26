@@ -30,17 +30,17 @@ LibraryModule UserInterface {
 					  ( 1, 2, tooltip           ) : "Short statement about the problem",
 					  ( 1, 2, workflowPageState ) : "Active",
 					  ( 1, 3, displayText       ) : "Control Panel",
-					  ( 1, 3, icon              ) : "aimms-equalizer2",
+					  ( 1, 3, icon              ) : "aimms-equalizer4",
 					  ( 1, 3, pageId            ) : "control_panel",
 					  ( 1, 3, tooltip           ) : "Overview of all the sets",
 					  ( 1, 3, workflowPageState ) : "Active",
-					  ( 1, 4, displayText       ) : "EV Allocation",
-					  ( 1, 4, icon              ) : "aimms-equalizer2",
+					  ( 1, 4, displayText       ) : "Progress",
+					  ( 1, 4, icon              ) : "aimms-spinner6",
 					  ( 1, 4, pageId            ) : "allocation",
 					  ( 1, 4, tooltip           ) : "Overview of all the data",
 					  ( 1, 4, workflowPageState ) : "Active",
 					  ( 1, 5, displayText       ) : "Results",
-					  ( 1, 5, icon              ) : "aimms-location5",
+					  ( 1, 5, icon              ) : "aimms-compass5",
 					  ( 1, 5, pageId            ) : "results",
 					  ( 1, 5, tooltip           ) : "Location data",
 					  ( 1, 5, workflowPageState ) : "Active" }
@@ -57,8 +57,17 @@ LibraryModule UserInterface {
 		}
 	}
 	Section Pages {
+		Procedure pr_readDefaultData {
+			Body: {
+				dex::GenerateDatasetMappings;
+				dex::ReadAllMappings;
+				
+				! Load default data
+				dex::ReadFromFile("DefaultData.xlsx", "Generated/DefaultData-Excel");
+			}
+		}
 		Section Control_Panel_Page;
-		Section Allocation_Page;
+		Section Progress_Page;
 		Section Results_Page;
 	}
 	Procedure LibraryInitialization {
