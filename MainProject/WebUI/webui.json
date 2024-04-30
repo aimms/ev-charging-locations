@@ -234,10 +234,10 @@
       ]
     },
     "center.latitude": {
-      "literal": 40.65563912141411
+      "literal": 42.10274529780637
     },
     "center.longitude": {
-      "literal": -77.16578253333995
+      "literal": -78.69946382939816
     },
     "name": {
       "literal": "map"
@@ -325,7 +325,7 @@
       "literal": "template"
     },
     "zoom": {
-      "literal": 7
+      "literal": 6
     }
   }
 }

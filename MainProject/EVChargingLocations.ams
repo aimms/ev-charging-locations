@@ -1,6 +1,20 @@
 ## ams_version=1.0
 
 Model Main_EVChargingLocations {
+	DeclarationSection DELETE {
+		Parameter p_distances_prev {
+			IndexDomain: (i_particle,i_loc,i_indv);
+			Comment: {
+				"!@TODO: this is not used, can we delete it?"
+			}
+		}
+		Parameter XY_initial_velocity {
+			Definition: 5;
+			Comment: {
+				"!@TODO: not used!"
+			}
+		}
+	}
 	Section Data_Model {
 		Section Quantities_and_Units {
 			Comment: {
@@ -115,205 +129,427 @@ Model Main_EVChargingLocations {
 			}
 		}
 	}
-	Section Initiate_Procedures {
-		Comment: "This section contains procedures that are necessary to initiate the PSO algorithm, such as spawning initial locations with initial velocities.";
-		DeclarationSection Spawning_Declaration {
-			Parameter XY_spawn_region {
-				Text: "Region in which particles each particle is spawned in an individual.";
-				Definition: 10;
-			}
-			Parameter XY_initial_velocity {
-				Definition: 5;
-			}
-			Parameter p_initialParticleLocationsX {
-				IndexDomain: i_particle;
-				Text: "Region in which to spawn each particle for each individual.";
-			}
-			Parameter p_initialParticleLocationsY {
-				IndexDomain: i_particle;
-				Text: "Region in which to spawn each particle for each individual.";
-			}
-			Parameter X_min {
-				Text: "Lowerbound for x-domain.";
-				Definition: 0;
-			}
-			Parameter X_max {
-				Text: "Upperbound for x-domain.";
-				Definition: max(i_loc, p_longitude(i_loc));
-			}
-			Parameter Y_min {
-				Text: "Lowerbound for y-domain.";
-				Definition: 0;
-			}
-			Parameter Y_max {
-				Text: "Upperbound for y-domain.";
-				Definition: max(i_loc, p_latitude(i_loc));
-			}
-		}
-	}
 	Section PSO_Model {
 		Comment: "This section contains procedures that align with the main operations within PSO.";
-		DeclarationSection Solution_Declaration {
-			Parameter p_currentSolutionX {
-				IndexDomain: (i_indv,i_particle);
-				Text: "X coordinates of the current solution for the individual.";
+		DeclarationSection KNN_Declaration {
+			Set s_def_nClosests {
+				SubsetOf: Integers;
+				Index: i_n_clos;
+				Definition: ElementRange(1, p_def_nClosest, 1);
 			}
-			Parameter p_previousSolutionX {
-				IndexDomain: (i_indv,i_particle);
-				Text: "X coordinates of the previous solution for the individual.";
+			Parameter p_def_nClosest {
+				Range: integer;
+				Definition: 20;
 			}
-			Parameter p_currentSolutionY {
-				IndexDomain: (i_indv,i_particle);
-				Text: "Y coordinates of the current solution for the individual.";
+			Parameter p_def_distanceCutoff {
+				Definition: 50;
 			}
-			Parameter p_previousSolutionY {
-				IndexDomain: (i_indv,i_particle);
-				Text: "Y coordinates of the previous solution for the individual.";
+			ElementParameter ep_nClosestLocation {
+				IndexDomain: (i_loc,i_indv);
+				Range: s_def_particles;
 			}
-		}
-		DeclarationSection Solution_Velocity_Declaration {
-			Parameter p_currentSolutionVelocityX {
-				IndexDomain: (i_indv,i_particle);
-				Text: "X velocity of the current solution for the individual.";
+			Parameter p_distances {
+				IndexDomain: (i_particle,i_loc,i_indv);
 			}
-			Parameter p_previousSolutionVelocityX {
-				IndexDomain: (i_indv,i_particle);
-				Text: "X velocity of the previous solution for the individual.";
+			Parameter p_allocationCount {
+				IndexDomain: (i_particle,i_indv);
 			}
-			Parameter p_currentSolutionVelocityY {
-				IndexDomain: (i_indv,i_particle);
-				Text: "Y velocity of the current solution for the individual.";
+			Parameter bp_def_activeStation {
+				IndexDomain: (i_particle,i_indv);
+				Definition: 1 $ p_allocationCount(i_particle,i_indv);
 			}
-			Parameter p_previousSolutionVelocityY {
-				IndexDomain: (i_indv,i_particle);
-				Text: "Y velocity of the previous solution for the individual.";
+			Parameter bp_def_unallocatedLocations {
+				IndexDomain: (i_loc,i_indv);
+				Range: binary;
+				Definition: 1 $ (not ep_nClosestLocation(i_loc,i_indv));
 			}
 		}
-		DeclarationSection Best_Global_Solution_Declaration {
-			Parameter p_bestGlobalSolution_Cost {
-				Default: 999999999;
-			}
-			Parameter p_bestGlobalSolutionX {
-				IndexDomain: (i_particle);
-				Text: "Best global solution X coordinate.";
-			}
-			Parameter p_bestGlobalSolutionY {
-				IndexDomain: (i_particle);
-				Text: "Best global solution Y coordinate.";
+		Parameter p_initialParticleLocationsX {
+			IndexDomain: i_particle;
+			Text: "Region in which to spawn each particle for each individual.";
+		}
+		Parameter p_initialParticleLocationsY {
+			IndexDomain: i_particle;
+			Text: "Region in which to spawn each particle for each individual.";
+		}
+		Parameter p_bestGlobalSolutionX {
+			IndexDomain: (i_particle);
+			Text: "Best global solution X coordinate.";
+		}
+		Parameter p_bestGlobalSolutionY {
+			IndexDomain: (i_particle);
+			Text: "Best global solution Y coordinate.";
+		}
+		Parameter p_currentSolutionX {
+			IndexDomain: (i_indv,i_particle);
+			Text: "X coordinates of the current solution for the individual.";
+		}
+		Parameter p_currentSolutionY {
+			IndexDomain: (i_indv,i_particle);
+			Text: "Y coordinates of the current solution for the individual.";
+		}
+		Parameter p_bestLocalSolutionX {
+			IndexDomain: (i_indv,i_particle);
+			Text: "Best local solution X coordinate.";
+		}
+		Parameter p_bestLocalSolutionY {
+			IndexDomain: (i_indv,i_particle);
+			Text: "Best local solution Y coordinate.";
+		}
+		Parameter p_previousSolutionX {
+			IndexDomain: (i_indv,i_particle);
+			Text: "X coordinates of the previous solution for the individual.";
+		}
+		Parameter p_previousSolutionY {
+			IndexDomain: (i_indv,i_particle);
+			Text: "Y coordinates of the previous solution for the individual.";
+		}
+		Parameter p_currentSolutionVelocityX {
+			IndexDomain: (i_indv,i_particle);
+			Text: "X velocity of the current solution for the individual.";
+		}
+		Parameter p_currentSolutionVelocityY {
+			IndexDomain: (i_indv,i_particle);
+			Text: "Y velocity of the current solution for the individual.";
+		}
+		Parameter p_previousSolutionVelocityX {
+			IndexDomain: (i_indv,i_particle);
+			Text: "X velocity of the previous solution for the individual.";
+		}
+		Parameter p_previousSolutionVelocityY {
+			IndexDomain: (i_indv,i_particle);
+			Text: "Y velocity of the previous solution for the individual.";
+		}
+		Parameter p_bestGlobalSolutionCost {
+			Default: 999999999;
+		}
+		Parameter p_bestLocalSolutionCost {
+			IndexDomain: (i_indv);
+			Default: inf;
+		}
+		Parameter p_totalConstructionCost {
+			IndexDomain: i_indv;
+		}
+		Parameter p_totalMaintenanceCost {
+			IndexDomain: i_indv;
+		}
+		Parameter p_totalDrivingCost {
+			IndexDomain: (i_indv);
+		}
+		Parameter p_totalChargingCost {
+			IndexDomain: (i_indv);
+		}
+		Parameter p_totalPenaltyCost {
+			IndexDomain: i_indv;
+		}
+		Parameter p_totalObjectiveCost {
+			IndexDomain: i_indv;
+		}
+		Parameter p_def_drivingCost {
+			IndexDomain: (i_loc,i_indv);
+			Definition: p_drivingCostPerMile * p_distances(ep_nClosestLocation(i_loc ,i_indv), i_loc, i_indv);
+		}
+		Parameter p_def_chargingCost {
+			IndexDomain: (i_loc,i_indv);
+			Definition: p_chargingCostPerHour;
+			Comment: {
+				"!@TODO: why not use p_chargingCostPerHour directly?"
 			}
 		}
-		DeclarationSection Best_Local_Solution_Declaration {
-			Parameter p_bestLocalSolution_Cost {
-				IndexDomain: (i_indv);
-				Default: inf;
-			}
-			Parameter p_bestLocalSolutionX {
-				IndexDomain: (i_indv,i_particle);
-				Text: "Best local solution X coordinate.";
-			}
-			Parameter p_bestLocalSolutionY {
-				IndexDomain: (i_indv,i_particle);
-				Text: "Best local solution Y coordinate.";
-			}
-		}
-		Procedure Variation_Procedures {
+		Procedure pr_initializeProblem {
 			Body: {
-				! Apply the velocity update
-				Update_Velocity;
+				block ! Spawn Individuals 
 				
-				! Apply the position update
-				Update_Position;
+				!@TODO Think if this will work for any latitude/longitude
+				p_loc_xMin := min(i_loc, p_longitude(i_loc));
+				p_loc_yMin := min(i_loc, p_latitude(i_loc));
+				p_loc_xMax := max(i_loc, p_longitude(i_loc));
+				p_loc_yMax := max(i_loc, p_latitude(i_loc));
 				
-				! Find the global and local bests
-				Get_Global_Best;
-				Get_Local_Best;
+				! Starting locations for the particles
+				p_initialParticleLocationsX(i_particle) := Uniform(p_loc_xMin, p_loc_xMax);
+				p_initialParticleLocationsY(i_particle) := Uniform(p_loc_yMin, p_loc_yMax);
+				
+				XY_spawn_region := 10;
+				
+				! Starting locations for the particles in each individual
+				p_currentSolutionX(i_indv, i_particle) 
+				:=  p_initialParticleLocationsX(i_particle) 
+				    + Uniform(-XY_spawn_region, XY_spawn_region);
+				
+				p_currentSolutionY(i_indv, i_particle) 
+				:=  p_initialParticleLocationsY(i_particle) 
+				    + Uniform(-XY_spawn_region, XY_spawn_region);
+				
+				! Starting velocities
+				p_currentSolutionVelocityX(i_indv, i_particle) := Normal(0, 5);
+				p_currentSolutionVelocityY(i_indv, i_particle) := Normal(0, 5);
+				
+				endblock;
+				
+				block ! Initiate Cognitive Component 
+				
+				! Set the best local solution as something close to the initial solution
+				p_bestLocalSolutionX(i_indv,i_particle) 
+				:=  p_currentSolutionX(i_indv,i_particle) 
+				    + Uniform(-XY_spawn_region/2, XY_spawn_region/2);
+				
+				p_bestLocalSolutionY(i_indv,i_particle) 
+				:=  p_currentSolutionY(i_indv,i_particle) 
+				    + Uniform(-XY_spawn_region/2, XY_spawn_region/2);
+				
+				endblock;
+				
+				block ! Initiate Social Component 
+				
+				! Select random individual as the initial best global
+				ep_individual := StringToElement(s_def_individuals, round(uniform(0, p_populationSize)));
+				
+				! Set the best local solution as something close to the initial solution
+				p_bestGlobalSolutionX(i_particle) := p_currentSolutionX(ep_individual, i_particle);
+				p_bestGlobalSolutionY(i_particle) := p_currentSolutionY(ep_individual, i_particle);
+				
+				endblock;
+				
+				p_distances_prev(i_particle,i_loc,i_indv) := 500;
+				
+				p_bestLocalSolutionCost(i_indv) := inf;
+				p_bestGlobalSolutionCost := inf;
+			}
+			Parameter XY_spawn_region {
+				Text: "Region in which particles each particle is spawned in an individual.";
+				Comment: {
+					"!@TODO: idk what this is"
+				}
+			}
+			Parameter p_loc_xMin {
+				Text: "Lowerbound for x-domain.";
+			}
+			Parameter p_loc_xMax {
+				Text: "Upperbound for x-domain.";
+			}
+			Parameter p_loc_yMin {
+				Text: "Lowerbound for y-domain.";
+			}
+			Parameter p_loc_yMax {
+				Text: "Upperbound for y-domain.";
 			}
 		}
-		Procedure Update_Velocity {
+		Procedure pr_KNNSubroutine {
 			Body: {
+				block ! Calculate Distances
+				
+				!@TODO: maybe we can change this to haversine?
+				for (i_indv in s_def_individuals) do
+				
+					! Calculate the Euclidean distance between each particle and each location
+					p_distances(i_particle,i_loc,i_indv) 
+					:=  sqrt(
+				            (p_currentSolutionX(i_indv,i_particle) - p_longitude(i_loc))^2 
+					        + (p_currentSolutionY(i_indv,i_particle) - p_latitude(i_loc))^2);
+				
+				endfor;
+				
+				endblock;
+				
+				pr_getClosest;
+			}
+		}
+		Procedure pr_getClosest {
+			Body: {
+				p_loc_distances(i_particle,i_loc,i_indv) 
+				:=  p_distances(i_particle,i_loc,i_indv) $ (p_distances(i_particle,i_loc,i_indv) < p_def_distanceCutoff);
+				
+				empty p_allocationCount;
+				empty ep_nClosestLocation;
+				
+				for (i_indv in s_def_individuals) do
+				
+					for (i_loc in s_locations) do
+				
+						empty ep_loc_particle;
+						p_loc_break := 0;
+				
+						! Find the nearest N locations
+						for i_n_clos in {1 .. p_def_nClosest} do
+				
+							! Now, if we manage an allocation then stop looking for the next N closest
+							ep_loc_particle(i_loc,i_n_clos,i_indv) := argmin(i_particle | p_loc_distances(i_particle,i_loc,i_indv) and (0.1 * p_allocationCount(i_particle,i_indv) < p_maxNumberVehiclesPerStation), p_loc_distances(i_particle,i_loc,i_indv));
+							ep_nClosestLocation(i_loc,i_indv) := ep_loc_particle(i_loc,i_n_clos,i_indv);
+							p_allocationCount(ep_loc_particle(i_loc,i_n_clos,i_indv),i_indv) += 1;
+							p_loc_distances(ep_loc_particle(i_loc,i_n_clos,i_indv),i_loc,i_indv) := 0;
+				
+							if ep_loc_particle(i_loc,i_n_clos,i_indv) then
+								p_loc_break := 1;
+								break;
+							endif;
+				
+						endfor;
+					endfor;
+				endfor;
+			}
+			Comment: "Determine the N closest locations for each vehicle";
+			Parameter p_loc_break {
+				Default: 0;
+			}
+			Parameter p_loc_distances {
+				IndexDomain: (i_particle,i_loc,i_indv);
+			}
+			ElementParameter ep_loc_particle {
+				IndexDomain: (i_loc,i_n_clos,i_indv);
+				Range: s_def_particles;
+			}
+		}
+		Procedure pr_evaluateCost {
+			Body: {
+				p_totalConstructionCost(i_indv) 
+				:=  p_constructionCost * sum(i_particle, bp_def_activeStation(i_particle, i_indv));
+				
+				p_totalMaintenanceCost(i_indv) 
+				:=  p_maintenanceCost 
+				    * sum(i_particle, bp_def_activeStation(i_particle, i_indv));
+				
+				p_totalDrivingCost(i_indv) 
+				:=  sum(i_loc, p_def_drivingCost(i_loc, i_indv));
+				
+				p_totalChargingCost(i_indv) 
+				:=  sum(i_loc, p_def_chargingCost(i_loc, i_indv));
+				
+				p_totalPenaltyCost(i_indv) 
+				:=  p_noAllocationPenalty 
+				    * sum(i_loc, bp_def_unallocatedLocations(i_loc, i_indv));
+				
+				p_totalObjectiveCost(i_indv) 
+				:= 	p_totalDrivingCost(i_indv)
+					+ p_totalChargingCost(i_indv)
+					+ p_totalConstructionCost(i_indv)
+					+ p_totalMaintenanceCost(i_indv)
+					+ p_totalPenaltyCost(i_indv);
+			}
+		}
+		Procedure pr_updateVariations {
+			Body: {
+				block ! Apply the velocity update 
 				p_previousSolutionVelocityX(i_indv,i_particle) := p_currentSolutionVelocityX(i_indv,i_particle);
 				p_previousSolutionVelocityY(i_indv,i_particle) := p_currentSolutionVelocityY(i_indv,i_particle);
 				
-				InertiaX(i_indv,i_particle) := p_inertiaComponent * p_previousSolutionVelocityX(i_indv,i_particle);
-				InertiaY(i_indv,i_particle) := p_inertiaComponent * p_previousSolutionVelocityY(i_indv,i_particle);
+				p_loc_inertiaX(i_indv,i_particle) := p_inertiaComponent * p_previousSolutionVelocityX(i_indv,i_particle);
+				p_loc_inertiaY(i_indv,i_particle) := p_inertiaComponent * p_previousSolutionVelocityY(i_indv,i_particle);
 				
-				CognitiveX(i_indv,i_particle) := p_cognitiveComponent * (p_bestLocalSolutionX(i_indv,i_particle) - p_currentSolutionX(i_indv,i_particle));
-				CognitiveY(i_indv,i_particle) := p_cognitiveComponent * (p_bestLocalSolutionY(i_indv,i_particle) - p_currentSolutionY(i_indv,i_particle));
+				p_loc_cognitiveX(i_indv,i_particle) := p_cognitiveComponent * (p_bestLocalSolutionX(i_indv,i_particle) - p_currentSolutionX(i_indv,i_particle));
+				p_loc_cognitiveY(i_indv,i_particle) := p_cognitiveComponent * (p_bestLocalSolutionY(i_indv,i_particle) - p_currentSolutionY(i_indv,i_particle));
 				
-				SocialX(i_indv,i_particle) := p_socialComponent * (p_bestGlobalSolutionX(i_particle) - p_currentSolutionX(i_indv,i_particle));
-				SocialY(i_indv,i_particle) := p_socialComponent * (p_bestGlobalSolutionY(i_particle) - p_currentSolutionY(i_indv,i_particle));
+				p_loc_socialX(i_indv,i_particle) := p_socialComponent * (p_bestGlobalSolutionX(i_particle) - p_currentSolutionX(i_indv,i_particle));
+				p_loc_socialY(i_indv,i_particle) := p_socialComponent * (p_bestGlobalSolutionY(i_particle) - p_currentSolutionY(i_indv,i_particle));
 				
-				p_currentSolutionVelocityX(i_indv,i_particle) := InertiaX(i_indv,i_particle) + CognitiveX(i_indv,i_particle) + SocialX(i_indv,i_particle);
-				p_currentSolutionVelocityY(i_indv,i_particle) := InertiaY(i_indv,i_particle) + CognitiveY(i_indv,i_particle) + SocialY(i_indv,i_particle);
-			}
-			Parameter InertiaX {
-				IndexDomain: (i_indv,i_particle);
-			}
-			Parameter InertiaY {
-				IndexDomain: (i_indv,i_particle);
-			}
-			Parameter CognitiveX {
-				IndexDomain: (i_indv,i_particle);
-			}
-			Parameter CognitiveY {
-				IndexDomain: (i_indv,i_particle);
-			}
-			Parameter SocialX {
-				IndexDomain: (i_indv,i_particle);
-			}
-			Parameter SocialY {
-				IndexDomain: (i_indv,i_particle);
-			}
-		}
-		Procedure Update_Position {
-			Body: {
+				p_currentSolutionVelocityX(i_indv,i_particle) 
+				:=  p_loc_inertiaX(i_indv,i_particle) 
+				    + p_loc_cognitiveX(i_indv,i_particle) 
+				    + p_loc_socialX(i_indv,i_particle);
+				
+				p_currentSolutionVelocityY(i_indv,i_particle) 
+				:=  p_loc_inertiaY(i_indv,i_particle) 
+				    + p_loc_cognitiveY(i_indv,i_particle) 
+				    + p_loc_socialY(i_indv,i_particle);
+				
+				endblock;
+				
+				block ! Apply the position update 
 				p_previousSolutionX(i_indv,i_particle) := p_currentSolutionX(i_indv,i_particle);
 				p_previousSolutionY(i_indv,i_particle) := p_currentSolutionY(i_indv,i_particle);
 				
 				p_currentSolutionX(i_indv,i_particle) := p_previousSolutionX(i_indv,i_particle) + p_currentSolutionVelocityX(i_indv,i_particle);
 				p_currentSolutionY(i_indv,i_particle) := p_previousSolutionY(i_indv,i_particle) + p_currentSolutionVelocityY(i_indv,i_particle);
-			}
-		}
-		Procedure Get_Global_Best {
-			Body: {
-				global_best := ArgMin[i_indv, TotalObjectiveCost(i_indv)];
+				endblock;
 				
-				if TotalObjectiveCost(global_best) < p_bestGlobalSolution_Cost then
+				block ! Find the global best 
+				ep_loc_globalBest := argmin(i_indv, p_totalObjectiveCost(i_indv));
 				
-					p_bestGlobalSolution_Cost := TotalObjectiveCost(global_best);
+				if p_totalObjectiveCost(ep_loc_globalBest) < p_bestGlobalSolutionCost then
 				
-					p_bestGlobalSolutionX(i_particle) := p_currentSolutionX(global_best,i_particle);
-					p_bestGlobalSolutionY(i_particle) := p_currentSolutionY(global_best,i_particle);
+					p_bestGlobalSolutionCost := p_totalObjectiveCost(ep_loc_globalBest);
+				
+					p_bestGlobalSolutionX(i_particle) := p_currentSolutionX(ep_loc_globalBest,i_particle);
+					p_bestGlobalSolutionY(i_particle) := p_currentSolutionY(ep_loc_globalBest,i_particle);
 				
 				endif;
+				endblock;
+				
+				block ! Find the local best 
+				
+				for i_indv | (p_totalObjectiveCost(i_indv) < p_bestLocalSolutionCost(i_indv)) do 
+				
+					p_bestLocalSolutionCost(i_indv) := p_totalObjectiveCost(i_indv);
+				
+					p_bestLocalSolutionX(i_indv,i_particle) := p_currentSolutionX(i_indv,i_particle);
+					p_bestLocalSolutionY(i_indv,i_particle) := p_currentSolutionY(i_indv,i_particle);
+				
+				endfor;
+				endblock;
 			}
-			ElementParameter global_best {
+			Parameter p_loc_inertiaX {
+				IndexDomain: (i_indv,i_particle);
+			}
+			Parameter p_loc_inertiaY {
+				IndexDomain: (i_indv,i_particle);
+			}
+			Parameter p_loc_cognitiveX {
+				IndexDomain: (i_indv,i_particle);
+			}
+			Parameter p_loc_cognitiveY {
+				IndexDomain: (i_indv,i_particle);
+			}
+			Parameter p_loc_socialX {
+				IndexDomain: (i_indv,i_particle);
+			}
+			Parameter p_loc_socialY {
+				IndexDomain: (i_indv,i_particle);
+			}
+			ElementParameter ep_loc_globalBest {
 				Range: s_def_individuals;
 			}
 		}
-		Procedure Get_Local_Best {
+		Procedure pr_runPSOAlgorithm {
 			Body: {
-				for (i_indv in s_def_individuals) do
+				pr_initializeProblem;
 				
-					if TotalObjectiveCost(i_indv) < p_bestLocalSolution_Cost(i_indv) then
+				for (i_gen in s_def_generations) do
 				
-						p_bestLocalSolution_Cost(i_indv) := TotalObjectiveCost(i_indv);
+					pr_KNNSubroutine;
+					pr_evaluateCost;
+					pr_updateVariations;
 				
-						p_bestLocalSolutionX(i_indv,i_particle) := p_currentSolutionX(i_indv,i_particle);
-						p_bestLocalSolutionY(i_indv,i_particle) := p_currentSolutionY(i_indv,i_particle);
-				
-					endif;
+					p_generationalFitness(i_gen) := mean(i_indv, p_totalObjectiveCost(i_indv));
+					p_globalBestFitness(i_gen) := p_bestGlobalSolutionCost;
 				
 				endfor;
 			}
 		}
+		Procedure pr_resetPSO {
+			Body: {
+				empty PSO_Model;
+			}
+		}
+		DeclarationSection Final_Results {
+			Parameter p_generationalFitness {
+				IndexDomain: i_gen;
+			}
+			Parameter p_globalBestFitness {
+				IndexDomain: i_gen;
+			}
+		}
 	}
-	Section Assignment_Model {
-		Comment: "This section is focused on the assignment aspect of the algorithm. Assigning vehicles to stations. A MIP is included, however, the heuristic (KNN) is preferred.";
+	Section MIP_Model {
+		Comment: "Section to record and wrangle different results for display on the UI.";
+		Procedure Solve_MIP {
+			Body: {
+				solve MIP_Assignment;
+			}
+		}
 		DeclarationSection MIP_Declaration {
 			Parameter Distances_domain {
 				IndexDomain: (i_particle,i_loc,i_indv);
-				Definition: Distances(i_particle,i_loc,i_indv) <= 30;
+				Definition: p_distances(i_particle,i_loc,i_indv) <= 30;
 			}
 			Variable Vehicle_to_Station {
 				IndexDomain: (i_particle,i_loc,i_indv);
@@ -333,7 +569,7 @@ Model Main_EVChargingLocations {
 			}
 			Variable TotalDistance {
 				Range: free;
-				Definition: sum[ (i_particle,i_loc,i_indv) | Distances_domain(i_particle,i_loc,i_indv), Vehicle_to_Station(i_particle,i_loc,i_indv) * Distances(i_particle,i_loc,i_indv)];
+				Definition: sum[ (i_particle,i_loc,i_indv) | Distances_domain(i_particle,i_loc,i_indv), Vehicle_to_Station(i_particle,i_loc,i_indv) * p_distances(i_particle,i_loc,i_indv)];
 			}
 			Variable TotalPenalty {
 				Range: free;
@@ -354,245 +590,11 @@ Model Main_EVChargingLocations {
 				Type: Automatic;
 			}
 		}
-		DeclarationSection KNN_Declaration {
-			Parameter N_Closest {
-				Range: integer;
-				Definition: 20;
-			}
-			Parameter Distance_Cutoff {
-				Definition: 50;
-			}
-			Parameter Distances {
-				IndexDomain: (i_particle,i_loc,i_indv);
-			}
-			Parameter p_distances_prev {
-				IndexDomain: (i_particle,i_loc,i_indv);
-			}
-			Set n_closest_set {
-				SubsetOf: Integers;
-				Index: n_clos;
-				Definition: ElementRange(1, N_Closest, 1);
-			}
-			ElementParameter N_Closest_Locations {
-				IndexDomain: (i_loc,i_indv);
-				Range: s_def_particles;
-			}
-			Parameter Unallocated_Locations {
-				IndexDomain: (i_loc,i_indv);
-				Definition: {
-					if not N_Closest_Locations(i_loc,i_indv) then
-						1
-					else
-						0
-					endif;
-				}
-			}
-			Parameter Allocation_Count {
-				IndexDomain: (i_particle,i_indv);
-			}
-			Parameter Active_Station {
-				IndexDomain: (i_particle,i_indv);
-				Definition: {
-					if Allocation_Count(i_particle,i_indv) then
-						1
-					else
-						0
-					endif;
-				}
-			}
-		}
-		DeclarationSection Cost_Declaration {
-			Parameter TotalConstructionCost {
-				IndexDomain: i_indv;
-			}
-			Parameter TotalMaintenanceCost {
-				IndexDomain: i_indv;
-			}
-			Parameter DrivingCost {
-				IndexDomain: (i_loc,i_indv);
-				Definition: p_drivingCostPerMile * Distances(N_Closest_Locations(i_loc,i_indv),i_loc,i_indv);
-			}
-			Parameter ChargingCost {
-				IndexDomain: (i_loc,i_indv);
-				Definition: p_chargingCostPerHour;
-			}
-			Parameter TotalDrivingCost {
-				IndexDomain: (i_indv);
-			}
-			Parameter TotalChargingCost {
-				IndexDomain: (i_indv);
-			}
-			Parameter TotalPenaltyCost {
-				IndexDomain: i_indv;
-			}
-			Parameter TotalObjectiveCost {
-				IndexDomain: i_indv;
-			}
-		}
-		Procedure KNN_Subroutine {
-			Body: {
-				Calculate_Distances;
-				
-				Get_Closest;
-			}
-		}
-		Procedure Calculate_Distances {
-			Body: {
-				for (i_indv in s_def_individuals) do
-				
-					! Calculate the Euclidean distance between each particle and each location
-					Distances(i_particle,i_loc,i_indv) := sqrt[(p_currentSolutionX(i_indv,i_particle) - p_longitude(i_loc))^2 + (p_currentSolutionY(i_indv,i_particle) - p_latitude(i_loc))^2];
-				
-				endfor;
-			}
-		}
-		Procedure Get_Closest {
-			Body: {
-				Distances_temp(i_particle,i_loc,i_indv) := Distances(i_particle,i_loc,i_indv) $ (Distances(i_particle,i_loc,i_indv) < Distance_Cutoff);
-				
-				empty Allocation_Count;
-				empty N_Closest_Locations;
-				
-				for (i_indv in s_def_individuals) do
-				
-					for (i_loc in s_locations) do
-				
-						empty local_temp;
-						local_break := 0;
-				
-						! Find the nearest N locations
-						for n_clos in {1 .. N_Closest} do
-				
-							! Now, if we manage an allocation then stop looking for the next N closest
-							local_temp(i_loc,n_clos,i_indv) := ArgMin(i_particle | Distances_temp(i_particle,i_loc,i_indv) and (0.1 * Allocation_Count(i_particle,i_indv) < p_maxNumberVehiclesPerStation), Distances_temp(i_particle,i_loc,i_indv));
-							N_Closest_Locations(i_loc,i_indv) := local_temp(i_loc,n_clos,i_indv);
-							Allocation_Count(local_temp(i_loc,n_clos,i_indv),i_indv) += 1;
-							Distances_temp(local_temp(i_loc,n_clos,i_indv),i_loc,i_indv) := 0;
-				
-							if local_temp(i_loc,n_clos,i_indv) then
-								local_break := 1;
-								break;
-							endif;
-				
-						endfor;
-					endfor;
-				endfor;
-			}
-			Comment: "Determine the N closest locations for each vehicle";
-			Parameter local_break {
-				Default: 0;
-			}
-			Parameter Distances_temp {
-				IndexDomain: (i_particle,i_loc,i_indv);
-			}
-			ElementParameter local_temp {
-				IndexDomain: (i_loc,n_clos,i_indv);
-				Range: s_def_particles;
-			}
-		}
-		Procedure Evaluate_Cost {
-			Body: {
-				TotalConstructionCost(i_indv) := p_constructionCost * sum( i_particle, Active_Station(i_particle,i_indv));
-				TotalMaintenanceCost(i_indv) := p_maintenanceCost * sum( i_particle, Active_Station(i_particle,i_indv));
-				TotalDrivingCost(i_indv) := sum[ i_loc, DrivingCost(i_loc,i_indv)];
-				TotalChargingCost(i_indv) := sum[ i_loc, ChargingCost(i_loc,i_indv)];
-				TotalPenaltyCost(i_indv) := p_noAllocationPenalty * sum[ i_loc, Unallocated_Locations(i_loc,i_indv)];
-				
-				TotalObjectiveCost(i_indv) := 	TotalDrivingCost(i_indv)
-											+ TotalChargingCost(i_indv)
-											+ TotalConstructionCost(i_indv)
-											+ TotalMaintenanceCost(i_indv)
-											+ TotalPenaltyCost(i_indv);
-			}
-		}
-		Procedure Solve_MIP {
-			Body: {
-				solve MIP_Assignment;
-			}
-		}
-	}
-	Section Results_Section {
-		Comment: "Section to record and wrangle different results for display on the UI.";
-		Section Generational_Results {
-			DeclarationSection Fitness {
-				Parameter GenerationalFitness {
-					IndexDomain: i_gen;
-				}
-				Parameter GlobalBestFitness {
-					IndexDomain: i_gen;
-				}
-			}
-		}
 		DeclarationSection MIP_Assignments {
 			Parameter Vehicle_to_Station_Distances {
 				IndexDomain: (i_particle,i_loc,i_indv);
-				Definition: Vehicle_to_Station(i_particle,i_loc,i_indv) * Distances(i_particle,i_loc,i_indv);
+				Definition: Vehicle_to_Station(i_particle,i_loc,i_indv) * p_distances(i_particle,i_loc,i_indv);
 			}
-		}
-	}
-	Procedure pr_initializeProblem {
-		Body: {
-			block ! Spawn Individuals 
-			! Starting locations for the particles
-			p_initialParticleLocationsX(i_particle) := Uniform(X_min, X_max);
-			p_initialParticleLocationsY(i_particle) := Uniform(Y_min, Y_max);
-			
-			! Starting locations for the particles in each individual
-			p_currentSolutionX(i_indv, i_particle) 
-			:=  p_initialParticleLocationsX(i_particle) 
-			    + Uniform(-XY_spawn_region, XY_spawn_region);
-			
-			p_currentSolutionY(i_indv, i_particle) 
-			:=  p_initialParticleLocationsY(i_particle) 
-			    + Uniform(-XY_spawn_region, XY_spawn_region);
-			
-			! Starting velocities
-			p_currentSolutionVelocityX(i_indv, i_particle) := Normal(0, 5);
-			p_currentSolutionVelocityY(i_indv, i_particle) := Normal(0, 5);
-			endblock;
-			
-			block ! Initiate Cognitive Component 
-			! Set the best local solution as something close to the initial solution
-			p_bestLocalSolutionX(i_indv,i_particle) := p_currentSolutionX(i_indv,i_particle) + uniform(-XY_spawn_region/2, XY_spawn_region/2);
-			p_bestLocalSolutionY(i_indv,i_particle) := p_currentSolutionY(i_indv,i_particle) + uniform(-XY_spawn_region/2, XY_spawn_region/2);
-			endblock;
-			
-			block ! Initiate Social Component 
-			! Select random individual as the initial best global
-			ep_individual := StringToElement(s_def_individuals, round(uniform(0, p_populationSize)));
-			
-			! Set the best local solution as something close to the initial solution
-			p_bestGlobalSolutionX(i_particle) := p_currentSolutionX(ep_individual, i_particle);
-			p_bestGlobalSolutionY(i_particle) := p_currentSolutionY(ep_individual, i_particle);
-			endblock;
-			
-			p_distances_prev(i_particle,i_loc,i_indv) := 500;
-			
-			p_bestLocalSolution_Cost(i_indv) := inf;
-			p_bestGlobalSolution_Cost := inf;
-		}
-	}
-	Procedure RunPSOAlgorithm {
-		Body: {
-			pr_initializeProblem;
-			
-			for (i_gen in s_def_generations) do
-			
-				KNN_Subroutine;
-				Evaluate_Cost;
-				Variation_Procedures;
-			
-				GenerationalFitness(i_gen) := mean[ i_indv, TotalObjectiveCost(i_indv)];
-				GlobalBestFitness(i_gen) := p_bestGlobalSolution_Cost;
-			
-			endfor;
-		}
-	}
-	Procedure ResetPSO {
-		Body: {
-			empty Allocation_Count;
-			
-			empty Solution_Declaration, Solution_Velocity_Declaration, Best_Global_Solution_Declaration, Best_Local_Solution_Declaration;
 		}
 	}
 	Procedure MainInitialization {
