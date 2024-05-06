@@ -1,20 +1,6 @@
 ## ams_version=1.0
 
 Model Main_EVChargingLocations {
-	DeclarationSection DELETE {
-		Parameter p_distances_prev {
-			IndexDomain: (i_particle,i_loc,i_indv);
-			Comment: {
-				"!@TODO: this is not used, can we delete it?"
-			}
-		}
-		Parameter XY_initial_velocity {
-			Definition: 5;
-			Comment: {
-				"!@TODO: not used!"
-			}
-		}
-	}
 	Section Data_Model {
 		Section Quantities_and_Units {
 			Comment: {
@@ -108,24 +94,27 @@ Model Main_EVChargingLocations {
 			Parameter p_numberParticles {
 				Text: "The number of particles in each individual.";
 				Range: integer;
-				InitialData: 600;
+				InitialData: 400;
 			}
 			Parameter p_numberGenerations {
-				InitialData: 10;
+				InitialData: 50;
 			}
 			Parameter p_populationSize {
 				Text: "Number of individuals in the population.";
 				Range: integer;
-				InitialData: 5;
+				InitialData: 50;
 			}
 			Parameter p_inertiaComponent {
-				InitialData: 0.3;
+				InitialData: 0.83;
 			}
 			Parameter p_cognitiveComponent {
-				InitialData: 0.2;
+				InitialData: 0.05;
 			}
 			Parameter p_socialComponent {
-				InitialData: 0.2;
+				InitialData: 0.14;
+			}
+			Parameter p_initial_velocity {
+				InitialData: 5;
 			}
 		}
 	}
@@ -252,9 +241,7 @@ Model Main_EVChargingLocations {
 		Parameter p_def_chargingCost {
 			IndexDomain: (i_loc,i_indv);
 			Definition: p_chargingCostPerHour;
-			Comment: {
-				"!@TODO: why not use p_chargingCostPerHour directly?"
-			}
+			Comment: "This cost could change over time, so a formula can be inserted here.";
 		}
 		Procedure pr_initializeProblem {
 			Body: {
@@ -282,8 +269,9 @@ Model Main_EVChargingLocations {
 				    + Uniform(-XY_spawn_region, XY_spawn_region);
 				
 				! Starting velocities
-				p_currentSolutionVelocityX(i_indv, i_particle) := Normal(0, 5);
-				p_currentSolutionVelocityY(i_indv, i_particle) := Normal(0, 5);
+				p_loc_binomial(i_indv,i_particle) := Binomial(0.5, 1);
+				p_currentSolutionVelocityX(i_indv, i_particle) := (-1 * (1 - p_loc_binomial(i_indv,i_particle)) + p_loc_binomial(i_indv,i_particle)) * Normal(p_initial_velocity, p_initial_velocity/2);
+				p_currentSolutionVelocityY(i_indv, i_particle) := (-1 * (1 - p_loc_binomial(i_indv,i_particle)) + p_loc_binomial(i_indv,i_particle)) * Normal(p_initial_velocity, p_initial_velocity/2);
 				
 				endblock;
 				
@@ -311,16 +299,12 @@ Model Main_EVChargingLocations {
 				
 				endblock;
 				
-				p_distances_prev(i_particle,i_loc,i_indv) := 500;
-				
 				p_bestLocalSolutionCost(i_indv) := inf;
 				p_bestGlobalSolutionCost := inf;
 			}
 			Parameter XY_spawn_region {
 				Text: "Region in which particles each particle is spawned in an individual.";
-				Comment: {
-					"!@TODO: idk what this is"
-				}
+				Comment: "Distance from an initial \'spawn\' location within which a particle can be initialized.";
 			}
 			Parameter p_loc_xMin {
 				Text: "Lowerbound for x-domain.";
@@ -334,12 +318,15 @@ Model Main_EVChargingLocations {
 			Parameter p_loc_yMax {
 				Text: "Upperbound for y-domain.";
 			}
+			Parameter p_loc_binomial {
+				IndexDomain: (i_indv,i_particle);
+			}
 		}
 		Procedure pr_KNNSubroutine {
 			Body: {
 				block ! Calculate Distances
 				
-				!@TODO: maybe we can change this to haversine?
+				!@TODO: maybe we can change this to haversine? For a basic model I think this is fine, it depends on the size of the region though. It could be useful to give the user an option.
 				for (i_indv in s_def_individuals) do
 				
 					! Calculate the Euclidean distance between each particle and each location
