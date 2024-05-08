@@ -6,3 +6,5 @@
 "Read_Location_Data" "pr_readDefaultData" "2024-04-26 17:23:43"
 "ui::Allocation_Page" "ui::Progress_Page" "2024-04-26 18:12:09"
 "pr_readDefaultData" "ui::pr_readDefaultData" "2024-04-26 18:20:50"
+"ui::sp_problemTitle" "ui::sp_def_problemTitle" "2024-05-08 19:18:04"
+"ui::Copy_sp_def_problemTitle" "ui::sp_def_algorithmTitle" "2024-05-08 19:18:19"

@@ -155,24 +155,16 @@
       }
     }
   },
-  "layouts/custom_c678b0d9-e86b-4145-978c-04818fcf5c1d": {
+  "layouts/custom_c7d7602f-353b-4e73-ae4c-29e8a431ad35": {
     "definition": {
       "literal": {
         "componentName": "Grid",
         "props": {
           "gridTemplateColumns": "1fr 1fr",
-          "gridTemplateRows": "0.05fr 0.95fr",
-          "gridTemplateAreas": "\"area-a area-b\" \"area-c area-d\""
+          "gridTemplateRows": "1fr",
+          "gridTemplateAreas": "\"area-b area-c\""
         },
         "items": [
-          {
-            "componentName": "WidgetArea",
-            "props": {
-              "gridArea": "area-a",
-              "name": "Area A",
-              "gridAutoFlow": "row"
-            }
-          },
           {
             "componentName": "WidgetArea",
             "props": {
@@ -188,20 +180,12 @@
               "name": "Area C",
               "gridAutoFlow": "row"
             }
-          },
-          {
-            "componentName": "WidgetArea",
-            "props": {
-              "gridArea": "area-d",
-              "name": "Area D",
-              "gridAutoFlow": "row"
-            }
           }
         ]
       }
     },
     "displayName": {
-      "literal": "CustomControlPanel"
+      "literal": "ControlPanelPage"
     }
   },
   "pages/allocation": {
@@ -236,56 +220,42 @@
     "bindings": {
       "literal": [
         {
-          "widgetUri": "Algorithm Parameters",
+          "widgetUri": "lbl_problemTitle",
           "gridArea": "area-b",
-          "dndId": "area-bAlgorithm Parameters0"
-        },
-        {
-          "widgetUri": "Problem Parameters",
-          "gridArea": "area-a",
-          "dndId": "area-aProblem Parameters1"
+          "dndId": "area-blbl_problemTitle0"
         },
         {
           "widgetUri": "Costs",
-          "gridArea": "area-c",
-          "dndId": "area-cCosts2"
+          "gridArea": "area-b",
+          "dndId": "area-bCosts1"
         },
         {
           "widgetUri": "Other Parameters",
+          "gridArea": "area-b",
+          "dndId": "area-bOther Parameters2"
+        },
+        {
+          "widgetUri": "lbl_algorithmTitle",
           "gridArea": "area-c",
-          "dndId": "area-cOther Parameters3"
+          "dndId": "area-clbl_algorithmTitle5"
         },
         {
           "widgetUri": "Algorithm Parameters_1",
-          "gridArea": "area-d",
-          "dndId": "area-dAlgorithm Parameters_14"
+          "gridArea": "area-c",
+          "dndId": "area-cAlgorithm Parameters_13"
         },
         {
           "widgetUri": "k-NN Controls",
-          "gridArea": "area-d",
-          "dndId": "Unassigned widgetsk-NN Controls"
+          "gridArea": "area-c",
+          "dndId": "area-ck-NN Controls4"
         }
       ]
     },
     "layoutId": {
-      "literal": "custom_c678b0d9-e86b-4145-978c-04818fcf5c1d"
+      "literal": "custom_c7d7602f-353b-4e73-ae4c-29e8a431ad35"
     },
     "widgets": {
       "literal": [
-        {
-          "uri": "Problem Parameters",
-          "layoutInfo": {
-            "width": "2",
-            "height": "1"
-          }
-        },
-        {
-          "uri": "Algorithm Parameters",
-          "layoutInfo": {
-            "width": "2",
-            "height": "1"
-          }
-        },
         {
           "uri": "Costs",
           "layoutInfo": {
@@ -309,6 +279,88 @@
         },
         {
           "uri": "k-NN Controls",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "lbl_problemTitle",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "lbl_algorithmTitle",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        }
+      ]
+    }
+  },
+  "pages/home": {
+    "aimms.widget.type": {
+      "literal": "pagev2-grid"
+    },
+    "bindings": {
+      "literal": [
+        {
+          "widgetUri": "img_homeLogo",
+          "gridArea": "area-d",
+          "dndId": "area-aimg_homeLogo1"
+        },
+        {
+          "widgetUri": "txt_welcome",
+          "gridArea": "area-a",
+          "dndId": "area-atxt_welcome0"
+        }
+      ]
+    },
+    "layoutId": {
+      "literal": "Layout10"
+    },
+    "widgets": {
+      "literal": [
+        {
+          "uri": "txt_welcome",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "img_homeLogo",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        }
+      ]
+    }
+  },
+  "pages/problem": {
+    "aimms.widget.type": {
+      "literal": "pagev2-grid"
+    },
+    "bindings": {
+      "literal": [
+        {
+          "widgetUri": "txt_problemDescription",
+          "gridArea": "area-a",
+          "dndId": "Unassigned widgetstxt_problemDescription"
+        }
+      ]
+    },
+    "layoutId": {
+      "literal": "Layout11"
+    },
+    "widgets": {
+      "literal": [
+        {
+          "uri": "txt_problemDescription",
           "layoutInfo": {
             "width": "2",
             "height": "1"
@@ -345,20 +397,9 @@
       ]
     }
   },
-  "widgets/Algorithm Parameters": {
-    "aimms.widget.type": {
-      "literal": "text"
-    },
-    "contents": {
-      "literal": "<div><b><span style=\"font-size: 18px;\">Algorithm Parameters</span></b></div>"
-    },
-    "name": {
-      "literal": "Algorithm Parameters"
-    }
-  },
   "widgets/Algorithm Parameters_1": {
     "aimms.widget.type": {
-      "literal": "table"
+      "literal": "scalar"
     },
     "contents": {
       "aimms": {
@@ -388,7 +429,7 @@
       ]
     },
     "name": {
-      "literal": "Algorithm Parameters (1)"
+      "literal": "scl_algorithmParameters"
     },
     "title": {
       "literal": "PSO Controls"
@@ -399,7 +440,7 @@
   },
   "widgets/Costs": {
     "aimms.widget.type": {
-      "literal": "table"
+      "literal": "scalar"
     },
     "contents": {
       "aimms": {
@@ -427,13 +468,25 @@
       ]
     },
     "name": {
-      "literal": "Costs"
+      "literal": "scl_costs"
     },
     "title": {
       "literal": "Costs"
     },
     "views": {
       "literal": {}
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0",
+        "views.1"
+      ]
+    },
+    "views.0.type": {
+      "literal": "view"
+    },
+    "views.1.type": {
+      "literal": "template"
     }
   },
   "widgets/Fitness Chart": {
@@ -458,9 +511,24 @@
       "literal": {}
     }
   },
+  "widgets/img_homeLogo": {
+    "aimms.widget.type": {
+      "literal": "image"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "ui::sp_def_logo"
+        ]
+      }
+    },
+    "name": {
+      "literal": "img_homeLogo"
+    }
+  },
   "widgets/k-NN Controls": {
     "aimms.widget.type": {
-      "literal": "table"
+      "literal": "scalar"
     },
     "contents": {
       "aimms": {
@@ -485,13 +553,45 @@
       ]
     },
     "name": {
-      "literal": "k-NN Controls"
+      "literal": "scl_k-NNControls"
     },
     "title": {
       "literal": "k-NN Controls"
     },
     "views": {
       "literal": {}
+    }
+  },
+  "widgets/lbl_algorithmTitle": {
+    "aimms.widget.type": {
+      "literal": "label"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "ui::sp_def_algorithmTitle"
+        ],
+        "slices": []
+      }
+    },
+    "name": {
+      "literal": "lbl_algorithmTitle"
+    }
+  },
+  "widgets/lbl_problemTitle": {
+    "aimms.widget.type": {
+      "literal": "label"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "ui::sp_def_problemTitle"
+        ],
+        "slices": []
+      }
+    },
+    "name": {
+      "literal": "lbl_problemTitle"
     }
   },
   "widgets/map": {
@@ -504,10 +604,10 @@
       ]
     },
     "center.latitude": {
-      "literal": 29.036960648558267
+      "literal": 21.89266410145681
     },
     "center.longitude": {
-      "literal": -76.68457031250001
+      "literal": -50.2960512607444
     },
     "heatmaps.__display_order__": {
       "literal": [
@@ -665,7 +765,7 @@
   },
   "widgets/Other Parameters": {
     "aimms.widget.type": {
-      "literal": "table"
+      "literal": "scalar"
     },
     "contents": {
       "aimms": {
@@ -692,7 +792,7 @@
       ]
     },
     "name": {
-      "literal": "Other Parameters"
+      "literal": "scl_otherControls"
     },
     "title": {
       "literal": "Other Controls"
@@ -701,15 +801,26 @@
       "literal": {}
     }
   },
-  "widgets/Problem Parameters": {
+  "widgets/txt_problemDescription": {
     "aimms.widget.type": {
       "literal": "text"
     },
     "contents": {
-      "literal": "<div><span style=\"font-size: 18px;\"><b>Problem Parameters</b></span></div>"
+      "literal": "<div><br></div>"
     },
     "name": {
-      "literal": "Problem Parameters"
+      "literal": "txt_problemDescription"
+    }
+  },
+  "widgets/txt_welcome": {
+    "aimms.widget.type": {
+      "literal": "text"
+    },
+    "contents": {
+      "literal": "<div style=\"text-align: center;\">&nbsp;</div><div><b style=\"background-color: inherit; font-size: 32px;\">Welcome!</b></div><div><br></div><div><span style=\"background-color: inherit; font-size: 18px;\">You are in an AIMMS Example. Feel free to play around and create something more in this app!</span></div><div><span style=\"background-color: inherit; font-size: 18px;\">&nbsp;</span></div><div><span style=\"background-color: inherit; font-size: 18px;\">If you do, please fork this repository and commit your changes.&nbsp;This ensures our GitHub stays up-to-date for the entire community!</span></div><div><br></div><div><span style=\"background-color: inherit; font-size: 18px;\">You can also check our other interactive resources:</span></div><div><br></div><ul><li><span style=\"background-color: inherit; font-size: 18px;\">In the online&nbsp;</span><a href=\"https://community.aimms.com/\" style=\"font-size: 18px;\" target=\"_blank\"><span style=\"background-color: inherit;\">Community</span></a><span style=\"background-color: inherit; font-size: 18px;\">, talk to other developers and AIMMSians about the product, modeling, use cases, and more.</span></li><li><span style=\"background-color: inherit; font-size: 18px;\">In the&nbsp;</span><a href=\"https://academy.aimms.com/\" style=\"font-size: 18px;\" target=\"_blank\"><span style=\"background-color: inherit;\">Academy</span></a><span style=\"background-color: inherit; font-size: 18px;\">, learn new skills and challenge yourself. We are busy creating new courses, so keep an eye out!</span></li></ul><div><br></div><div><span style=\"background-color: inherit; font-size: 18px;\">For questions that can't be posted on the community, contact us at&nbsp;</span><i style=\"background-color: rgb(255, 255, 204); font-size: 18px;\">support@aimms.com</i><span style=\"background-color: inherit; font-size: 18px;\">.</span></div><div><br></div><div><br></div><div><br></div><div><br></div><div><br></div><div><br></div><div><br></div>"
+    },
+    "name": {
+      "literal": "txt_welcome"
     }
   }
 }

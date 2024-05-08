@@ -1,0 +1,6 @@
+.tag-label>.label {
+    background-color: var(--primary);
+    font-weight: bolder;
+    font-size: large;
+    color: white;
+}
