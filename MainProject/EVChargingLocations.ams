@@ -1,6 +1,13 @@
 ## ams_version=1.0
 
 Model Main_EVChargingLocations {
+	Section UI_Model {
+		DeclarationSection Map {
+			Parameter NodeSize {
+				Definition: 10;
+			}
+		}
+	}
 	Section Data_Model {
 		Section Quantities_and_Units {
 			Comment: {
@@ -88,9 +95,14 @@ Model Main_EVChargingLocations {
 			Parameter p_noAllocationPenalty {
 				InitialData: 5000;
 			}
-			Parameter p_maxNumberVehiclesPerStation {
-				InitialData: 16;
+			Parameter p_maxNumberChargersPerStation {
+				InitialData: 8;
 			}
+			Parameter p_meanVehicleRange;
+			Parameter p_maxVehicleRange {
+				InitialData: 250;
+			}
+			Parameter p_chargingProbability;
 			Parameter p_numberParticles {
 				Text: "The number of particles in each individual.";
 				Range: integer;
@@ -128,10 +140,10 @@ Model Main_EVChargingLocations {
 			}
 			Parameter p_def_nClosest {
 				Range: integer;
-				Definition: 20;
+				InitialData: 20;
 			}
 			Parameter p_def_distanceCutoff {
-				Definition: 50;
+				InitialData: 50;
 			}
 			ElementParameter ep_nClosestLocation {
 				IndexDomain: (i_loc,i_indv);
@@ -257,16 +269,16 @@ Model Main_EVChargingLocations {
 				p_initialParticleLocationsX(i_particle) := Uniform(p_loc_xMin, p_loc_xMax);
 				p_initialParticleLocationsY(i_particle) := Uniform(p_loc_yMin, p_loc_yMax);
 				
-				XY_spawn_region := 10;
+				p_spawn_region := 10;
 				
 				! Starting locations for the particles in each individual
 				p_currentSolutionX(i_indv, i_particle) 
 				:=  p_initialParticleLocationsX(i_particle) 
-				    + Uniform(-XY_spawn_region, XY_spawn_region);
+				    + Uniform(-p_spawn_region, p_spawn_region);
 				
 				p_currentSolutionY(i_indv, i_particle) 
 				:=  p_initialParticleLocationsY(i_particle) 
-				    + Uniform(-XY_spawn_region, XY_spawn_region);
+				    + Uniform(-p_spawn_region, p_spawn_region);
 				
 				! Starting velocities
 				p_loc_binomial(i_indv,i_particle) := Binomial(0.5, 1);
@@ -280,11 +292,11 @@ Model Main_EVChargingLocations {
 				! Set the best local solution as something close to the initial solution
 				p_bestLocalSolutionX(i_indv,i_particle) 
 				:=  p_currentSolutionX(i_indv,i_particle) 
-				    + Uniform(-XY_spawn_region/2, XY_spawn_region/2);
+				    + Uniform(-p_spawn_region/2, p_spawn_region/2);
 				
 				p_bestLocalSolutionY(i_indv,i_particle) 
 				:=  p_currentSolutionY(i_indv,i_particle) 
-				    + Uniform(-XY_spawn_region/2, XY_spawn_region/2);
+				    + Uniform(-p_spawn_region/2, p_spawn_region/2);
 				
 				endblock;
 				
@@ -302,7 +314,7 @@ Model Main_EVChargingLocations {
 				p_bestLocalSolutionCost(i_indv) := inf;
 				p_bestGlobalSolutionCost := inf;
 			}
-			Parameter XY_spawn_region {
+			Parameter p_spawn_region {
 				Text: "Region in which particles each particle is spawned in an individual.";
 				Comment: "Distance from an initial \'spawn\' location within which a particle can be initialized.";
 			}
@@ -361,7 +373,7 @@ Model Main_EVChargingLocations {
 						for i_n_clos in {1 .. p_def_nClosest} do
 				
 							! Now, if we manage an allocation then stop looking for the next N closest
-							ep_loc_particle(i_loc,i_n_clos,i_indv) := argmin(i_particle | p_loc_distances(i_particle,i_loc,i_indv) and (0.1 * p_allocationCount(i_particle,i_indv) < p_maxNumberVehiclesPerStation), p_loc_distances(i_particle,i_loc,i_indv));
+							ep_loc_particle(i_loc,i_n_clos,i_indv) := argmin(i_particle | p_loc_distances(i_particle,i_loc,i_indv) and (0.1 * p_allocationCount(i_particle,i_indv) < 2 * p_maxNumberChargersPerStation), p_loc_distances(i_particle,i_loc,i_indv));
 							ep_nClosestLocation(i_loc,i_indv) := ep_loc_particle(i_loc,i_n_clos,i_indv);
 							p_allocationCount(ep_loc_particle(i_loc,i_n_clos,i_indv),i_indv) += 1;
 							p_loc_distances(ep_loc_particle(i_loc,i_n_clos,i_indv),i_loc,i_indv) := 0;
@@ -585,6 +597,13 @@ Model Main_EVChargingLocations {
 		}
 	}
 	Procedure MainInitialization {
+		Body: {
+			!dex::GenerateDatasetMappings;
+			dex::ReadAllMappings;
+			
+			! Read load data
+			dex::ReadFromFile("DefaultData.xlsx", "Generated/DefaultData-Excel");
+		}
 		Comment: "Add initialization statements here that do NOT require any library being initialized already.";
 	}
 	Procedure PostMainInitialization {

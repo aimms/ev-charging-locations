@@ -161,8 +161,8 @@
         "componentName": "Grid",
         "props": {
           "gridTemplateColumns": "1fr 1fr",
-          "gridTemplateRows": "1fr",
-          "gridTemplateAreas": "\"area-a area-b\""
+          "gridTemplateRows": "0.05fr 0.95fr",
+          "gridTemplateAreas": "\"area-a area-b\" \"area-c area-d\""
         },
         "items": [
           {
@@ -178,7 +178,23 @@
             "props": {
               "gridArea": "area-b",
               "name": "Area B",
-              "gridAutoFlow": "column"
+              "gridAutoFlow": "row"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-c",
+              "name": "Area C",
+              "gridAutoFlow": "row"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-d",
+              "name": "Area D",
+              "gridAutoFlow": "row"
             }
           }
         ]
@@ -188,12 +204,117 @@
       "literal": "CustomControlPanel"
     }
   },
+  "pages/allocation": {
+    "bindings": {
+      "literal": [
+        {
+          "widgetUri": "Fitness Chart",
+          "gridArea": "area-a",
+          "dndId": "Unassigned widgetsFitness Chart"
+        }
+      ]
+    },
+    "widgets": {
+      "literal": [
+        {
+          "uri": "Fitness Chart",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        }
+      ]
+    },
+    "aimms.widget.type": {
+      "literal": "pagev2-grid"
+    }
+  },
   "pages/control_panel": {
     "aimms.widget.type": {
       "literal": "pagev2-grid"
     },
+    "bindings": {
+      "literal": [
+        {
+          "widgetUri": "Algorithm Parameters",
+          "gridArea": "area-b",
+          "dndId": "area-bAlgorithm Parameters0"
+        },
+        {
+          "widgetUri": "Problem Parameters",
+          "gridArea": "area-a",
+          "dndId": "area-aProblem Parameters1"
+        },
+        {
+          "widgetUri": "Costs",
+          "gridArea": "area-c",
+          "dndId": "area-cCosts2"
+        },
+        {
+          "widgetUri": "Other Parameters",
+          "gridArea": "area-c",
+          "dndId": "area-cOther Parameters3"
+        },
+        {
+          "widgetUri": "Algorithm Parameters_1",
+          "gridArea": "area-d",
+          "dndId": "area-dAlgorithm Parameters_14"
+        },
+        {
+          "widgetUri": "k-NN Controls",
+          "gridArea": "area-d",
+          "dndId": "Unassigned widgetsk-NN Controls"
+        }
+      ]
+    },
     "layoutId": {
       "literal": "custom_c678b0d9-e86b-4145-978c-04818fcf5c1d"
+    },
+    "widgets": {
+      "literal": [
+        {
+          "uri": "Problem Parameters",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "Algorithm Parameters",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "Costs",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "Other Parameters",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "Algorithm Parameters_1",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "k-NN Controls",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        }
+      ]
     }
   },
   "pages/results": {
@@ -224,6 +345,155 @@
       ]
     }
   },
+  "widgets/Algorithm Parameters": {
+    "aimms.widget.type": {
+      "literal": "text"
+    },
+    "contents": {
+      "literal": "<div><b><span style=\"font-size: 18px;\">Algorithm Parameters</span></b></div>"
+    },
+    "name": {
+      "literal": "Algorithm Parameters"
+    }
+  },
+  "widgets/Algorithm Parameters_1": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "p_numberParticles",
+          "p_numberGenerations",
+          "p_populationSize",
+          "p_inertiaComponent",
+          "p_cognitiveComponent",
+          "p_socialComponent",
+          "p_initial_velocity"
+        ]
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "rowHeader",
+          "colKey": "<IDENTIFIER-SET>",
+          "width": 50.13
+        },
+        {
+          "type": "colHeader",
+          "colKey": {},
+          "width": 47.91
+        }
+      ]
+    },
+    "name": {
+      "literal": "Algorithm Parameters (1)"
+    },
+    "title": {
+      "literal": "PSO Controls"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/Costs": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "p_maintenanceCost",
+          "p_constructionCost",
+          "p_drivingCostPerMile",
+          "p_chargingCostPerHour",
+          "p_noAllocationPenalty"
+        ]
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "colHeader",
+          "colKey": {},
+          "width": 32.7
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "<IDENTIFIER-SET>",
+          "width": 53.54
+        }
+      ]
+    },
+    "name": {
+      "literal": "Costs"
+    },
+    "title": {
+      "literal": "Costs"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/Fitness Chart": {
+    "aimms.widget.type": {
+      "literal": "linechart"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "p_generationalFitness",
+          "p_globalBestFitness"
+        ]
+      }
+    },
+    "name": {
+      "literal": "Fitness Chart"
+    },
+    "title": {
+      "literal": "Performance"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/k-NN Controls": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "p_def_nClosest",
+          "p_def_distanceCutoff"
+        ]
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "rowHeader",
+          "colKey": "<IDENTIFIER-SET>",
+          "width": 51.57
+        },
+        {
+          "type": "colHeader",
+          "colKey": {},
+          "width": 47.59
+        }
+      ]
+    },
+    "name": {
+      "literal": "k-NN Controls"
+    },
+    "title": {
+      "literal": "k-NN Controls"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
   "widgets/map": {
     "aimms.widget.type": {
       "literal": "map-v2"
@@ -234,17 +504,23 @@
       ]
     },
     "center.latitude": {
-      "literal": 42.10274529780637
+      "literal": 29.036960648558267
     },
     "center.longitude": {
-      "literal": -78.69946382939816
+      "literal": -76.68457031250001
+    },
+    "heatmaps.__display_order__": {
+      "literal": [
+        "heatmaps.0"
+      ]
     },
     "name": {
       "literal": "map"
     },
     "nodes.__display_order__": {
       "literal": [
-        "nodes.0"
+        "nodes.0",
+        "nodes.1"
       ]
     },
     "nodes.0": {
@@ -306,8 +582,67 @@
         ]
       }
     },
+    "nodes.1": {
+      "aimms": {
+        "contents": [
+          "p_bestGlobalSolutionX",
+          "p_bestGlobalSolutionY"
+        ],
+        "slices": [
+          {
+            "identifier": "p_bestGlobalSolutionX",
+            "slice": [
+              {
+                "index": "i_particle",
+                "type": "free",
+                "value": "i_particle"
+              }
+            ]
+          },
+          {
+            "identifier": "p_bestGlobalSolutionY",
+            "slice": [
+              {
+                "index": "i_particle",
+                "type": "free",
+                "value": "i_particle"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "nodes.1.index": {
+      "literal": {
+        "identifier": "i_particle"
+      }
+    },
+    "nodes.1.latitude": {
+      "literal": {
+        "identifier": "p_bestGlobalSolutionY",
+        "slice": [
+          {
+            "index": "i_particle",
+            "type": "free",
+            "value": "i_particle"
+          }
+        ]
+      }
+    },
+    "nodes.1.longitude": {
+      "literal": {
+        "identifier": "p_bestGlobalSolutionX",
+        "slice": [
+          {
+            "index": "i_particle",
+            "type": "free",
+            "value": "i_particle"
+          }
+        ]
+      }
+    },
     "title": {
-      "literal": "gdx"
+      "literal": "EV Charging Locations"
     },
     "views": {
       "literal": {}
@@ -325,7 +660,56 @@
       "literal": "template"
     },
     "zoom": {
-      "literal": 6
+      "literal": 4
+    }
+  },
+  "widgets/Other Parameters": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "p_maxNumberChargersPerStation",
+          "p_chargingProbability",
+          "p_maxVehicleRange",
+          "p_meanVehicleRange"
+        ]
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "rowHeader",
+          "colKey": "<IDENTIFIER-SET>",
+          "width": 52.32
+        },
+        {
+          "type": "colHeader",
+          "colKey": {},
+          "width": 35
+        }
+      ]
+    },
+    "name": {
+      "literal": "Other Parameters"
+    },
+    "title": {
+      "literal": "Other Controls"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/Problem Parameters": {
+    "aimms.widget.type": {
+      "literal": "text"
+    },
+    "contents": {
+      "literal": "<div><span style=\"font-size: 18px;\"><b>Problem Parameters</b></span></div>"
+    },
+    "name": {
+      "literal": "Problem Parameters"
     }
   }
 }
