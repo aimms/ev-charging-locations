@@ -55,6 +55,34 @@ LibraryModule UserInterface {
 				IndexDomain: (webui::indexPageExtension,webui::indexPageActionSpec);
 			}
 		}
+		Procedure pr_yToLatitude {
+			Arguments: (p_in_y,p_out_latitude);
+			Body: {
+				p_loc_auxiliar := p_in_y * (p_def_maxLatitude - p_def_minLatitude) /$ p_def_maxY;
+				p_out_latitude := p_loc_auxiliar + p_def_minLatitude;
+			}
+			Parameter p_in_y {
+				Property: Input;
+			}
+			Parameter p_out_latitude {
+				Property: Output;
+			}
+			Parameter p_loc_auxiliar;
+		}
+		Procedure pr_xToLongitude {
+			Arguments: (p_in_x,p_out_longitude);
+			Body: {
+				p_loc_auxiliar := p_in_x * (p_def_maxLongitude - p_def_minLongitude) /$ p_def_maxX;
+				p_out_longitude := p_loc_auxiliar + p_def_minLongitude;
+			}
+			Parameter p_in_x {
+				Property: Input;
+			}
+			Parameter p_out_longitude {
+				Property: Output;
+			}
+			Parameter p_loc_auxiliar;
+		}
 	}
 	Section Pages {
 		Procedure pr_readDefaultData {
@@ -83,10 +111,32 @@ LibraryModule UserInterface {
 			}
 		}
 		Section Progress_Page;
-		Section Results_Page;
+		Section Results_Page {
+			Procedure pr_calculateSolutionPoints {
+				Body: {
+					empty p_bestGlobalSolutionLatitude ,p_bestGlobalSolutionLongitude;
+					
+					for i_particle do
+					    ui::pr_xToLongitude(
+					        p_in_x          :  p_bestGlobalSolutionX(i_particle), 
+					        p_out_longitude :  p_bestGlobalSolutionLongitude(i_particle));
+					
+					    ui::pr_yToLatitude(
+					        p_in_y          :  p_bestGlobalSolutionY(i_particle), 
+					        p_out_latitude  :  p_bestGlobalSolutionLatitude(i_particle));    
+					endfor;
+				}
+			}
+			Parameter p_bestGlobalSolutionLongitude {
+				IndexDomain: (i_particle);
+				Text: "Best global solution X coordinate.";
+			}
+			Parameter p_bestGlobalSolutionLatitude {
+				IndexDomain: (i_particle);
+				Text: "Best global solution Y coordinate.";
+			}
+		}
 	}
-	Procedure pr_yToLatitude;
-	Procedure pr_xToLongitude;
 	Procedure LibraryInitialization {
 		Comment: "Add initialization statements here that do not require any other library being initialized already.";
 	}

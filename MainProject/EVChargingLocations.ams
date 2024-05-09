@@ -67,17 +67,45 @@ Model Main_EVChargingLocations {
 				Range: s_locations;
 				dex::ColumnName: Location;
 			}
-			Parameter p_longitude {
+			Parameter p_y {
 				IndexDomain: i_loc;
-				dex::ColumnName: Longitude;
+				dex::ColumnName: Y;
+				dex::Dataset: DefaultData;
+				dex::TableName: Locations;
+			}
+			Parameter p_x {
+				IndexDomain: i_loc;
+				dex::ColumnName: X;
 				dex::Dataset: DefaultData;
 				dex::TableName: Locations;
 			}
 			Parameter p_latitude {
 				IndexDomain: i_loc;
-				dex::ColumnName: Latitude;
-				dex::Dataset: DefaultData;
-				dex::TableName: Locations;
+			}
+			Parameter p_longitude {
+				IndexDomain: i_loc;
+			}
+			Parameter p_def_minLatitude {
+				Definition: 39.722422;
+				Comment: "data from Pennsylvania (https://www.latlong.net/)";
+			}
+			Parameter p_def_maxLatitude {
+				Definition: 41.998439;
+				Comment: "data from Pennsylvania (https://www.latlong.net/)";
+			}
+			Parameter p_def_minLongitude {
+				Definition: -80.516914;
+				Comment: "data from Pennsylvania (https://www.latlong.net/)";
+			}
+			Parameter p_def_maxLongitude {
+				Definition: -74.023697;
+				Comment: "data from Pennsylvania (https://www.latlong.net/)";
+			}
+			Parameter p_def_maxX {
+				Definition: max(i_loc, p_x(i_loc));
+			}
+			Parameter p_def_maxY {
+				Definition: max(i_loc, p_y(i_loc));
 			}
 		}
 		DeclarationSection Control_Panel {
@@ -293,10 +321,10 @@ Model Main_EVChargingLocations {
 				block ! Spawn Individuals 
 				
 				!@TODO Think if this will work for any latitude/longitude
-				p_loc_xMin := min(i_loc, p_longitude(i_loc));
-				p_loc_yMin := min(i_loc, p_latitude(i_loc));
-				p_loc_xMax := max(i_loc, p_longitude(i_loc));
-				p_loc_yMax := max(i_loc, p_latitude(i_loc));
+				p_loc_xMin := min(i_loc, p_y(i_loc));
+				p_loc_yMin := min(i_loc, p_x(i_loc));
+				p_loc_xMax := max(i_loc, p_y(i_loc));
+				p_loc_yMax := max(i_loc, p_x(i_loc));
 				
 				! Starting locations for the particles
 				p_initialParticleLocationsX(i_particle) := Uniform(p_loc_xMin, p_loc_xMax);
@@ -371,8 +399,8 @@ Model Main_EVChargingLocations {
 					! Calculate the Euclidean distance between each particle and each location
 					p_distances(i_particle,i_loc,i_indv) 
 					:=  sqrt(
-				            (p_currentSolutionX(i_indv,i_particle) - p_longitude(i_loc))^2 
-					        + (p_currentSolutionY(i_indv,i_particle) - p_latitude(i_loc))^2);
+				            (p_currentSolutionX(i_indv,i_particle) - p_y(i_loc))^2 
+					        + (p_currentSolutionY(i_indv,i_particle) - p_x(i_loc))^2);
 				
 				endfor;
 				
@@ -482,6 +510,7 @@ Model Main_EVChargingLocations {
 				:=  p_loc_inertiaY(i_indv,i_particle) 
 				    + p_loc_cognitiveY(i_indv,i_particle) 
 				    + p_loc_socialY(i_indv,i_particle);
+				
 				
 				endblock;
 				
@@ -647,11 +676,24 @@ Model Main_EVChargingLocations {
 	}
 	Procedure MainInitialization {
 		Body: {
-			!dex::GenerateDatasetMappings;
+			dex::GenerateDatasetMappings;
 			dex::ReadAllMappings;
+			
+			empty p_y, p_x;
 			
 			! Read load data
 			dex::ReadFromFile("DefaultData.xlsx", "Generated/DefaultData-Excel");
+			
+			empty p_longitude,p_latitude;
+			for i_loc do
+			    ui::pr_xToLongitude(
+			        p_in_x          :  p_x(i_loc), 
+			        p_out_longitude :  p_longitude(i_loc));
+			
+			    ui::pr_yToLatitude(
+			        p_in_y          :  p_y(i_loc), 
+			        p_out_latitude  :  p_latitude(i_loc));    
+			endfor;
 		}
 		Comment: "Add initialization statements here that do NOT require any library being initialized already.";
 	}

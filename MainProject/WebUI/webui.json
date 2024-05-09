@@ -776,10 +776,10 @@
       ]
     },
     "center.latitude": {
-      "literal": 48.15597660136513
+      "literal": 38.919269227860696
     },
     "center.longitude": {
-      "literal": -88.69611666219188
+      "literal": -83.60016482371225
     },
     "heatmaps.__display_order__": {
       "literal": [
@@ -857,12 +857,12 @@
     "nodes.1": {
       "aimms": {
         "contents": [
-          "p_bestGlobalSolutionX",
-          "p_bestGlobalSolutionY"
+          "ui::p_bestGlobalSolutionLongitude",
+          "ui::p_bestGlobalSolutionLatitude"
         ],
         "slices": [
           {
-            "identifier": "p_bestGlobalSolutionX",
+            "identifier": "ui::p_bestGlobalSolutionLongitude",
             "slice": [
               {
                 "index": "i_particle",
@@ -872,7 +872,7 @@
             ]
           },
           {
-            "identifier": "p_bestGlobalSolutionY",
+            "identifier": "ui::p_bestGlobalSolutionLatitude",
             "slice": [
               {
                 "index": "i_particle",
@@ -891,7 +891,7 @@
     },
     "nodes.1.latitude": {
       "literal": {
-        "identifier": "p_bestGlobalSolutionY",
+        "identifier": "ui::p_bestGlobalSolutionLatitude",
         "slice": [
           {
             "index": "i_particle",
@@ -903,7 +903,7 @@
     },
     "nodes.1.longitude": {
       "literal": {
-        "identifier": "p_bestGlobalSolutionX",
+        "identifier": "ui::p_bestGlobalSolutionLongitude",
         "slice": [
           {
             "index": "i_particle",
@@ -932,7 +932,7 @@
       "literal": "template"
     },
     "zoom": {
-      "literal": 3
+      "literal": 5
     }
   },
   "widgets/Other Parameters": {

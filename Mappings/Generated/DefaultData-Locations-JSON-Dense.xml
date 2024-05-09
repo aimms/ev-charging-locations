@@ -4,8 +4,8 @@
 		<ArrayMapping name="rows">
 			<ObjectMapping dense-children="1">
 				<ValueMapping name="Location" binds-to="i_loc" />
-				<ValueMapping name="Longitude" maps-to="p_longitude(i_loc)" />
-				<ValueMapping name="Latitude" maps-to="p_latitude(i_loc)" />
+				<ValueMapping name="Y" maps-to="p_y(i_loc)" />
+				<ValueMapping name="X" maps-to="p_x(i_loc)" />
 			</ObjectMapping>
 		</ArrayMapping>
 	</ObjectMapping>
