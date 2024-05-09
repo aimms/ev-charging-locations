@@ -195,7 +195,7 @@
         "props": {
           "gridTemplateColumns": "3fr 1fr",
           "gridTemplateRows": "1fr 0.5fr 1fr",
-          "gridTemplateAreas": "\"area-a area-b\" \"area-a area-c\" \"area-a area-d\""
+          "gridTemplateAreas": "\"area-a area-b\" \"area-a area-c\" \"area-d area-d\""
         },
         "items": [
           {
@@ -227,7 +227,7 @@
             "props": {
               "gridArea": "area-d",
               "name": "Area D",
-              "gridAutoFlow": "row"
+              "gridAutoFlow": "column"
             }
           }
         ]
@@ -238,12 +238,15 @@
     }
   },
   "pages/allocation": {
+    "aimms.widget.type": {
+      "literal": "pagev2-grid"
+    },
     "bindings": {
       "literal": [
         {
           "widgetUri": "Fitness Chart",
           "gridArea": "area-a",
-          "dndId": "Unassigned widgetsFitness Chart"
+          "dndId": "area-aFitness Chart0"
         }
       ]
     },
@@ -257,9 +260,6 @@
           }
         }
       ]
-    },
-    "aimms.widget.type": {
-      "literal": "pagev2-grid"
     }
   },
   "pages/control_panel": {
@@ -440,9 +440,14 @@
           "dndId": "area-cHappiness2"
         },
         {
-          "widgetUri": "Distance to Station",
+          "widgetUri": "EV Allocations",
           "gridArea": "area-d",
-          "dndId": "Unassigned widgetsDistance to Station"
+          "dndId": "area-dEV Allocations3"
+        },
+        {
+          "widgetUri": "Station Cost Breakdown",
+          "gridArea": "area-d",
+          "dndId": "Unassigned widgetsStation Cost Breakdown"
         }
       ]
     },
@@ -473,7 +478,14 @@
           }
         },
         {
-          "uri": "Distance to Station",
+          "uri": "EV Allocations",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "Station Cost Breakdown",
           "layoutInfo": {
             "width": "2",
             "height": "1"
@@ -522,6 +534,74 @@
     },
     "title": {
       "literal": "PSO Controls"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/Assignments": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "p_bestGlobalAllocation",
+          "p_bestGlobalSolutionDistanceToStation"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "i_loc"
+        ],
+        "colHeader": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "contents.sorting": {
+      "literal": [
+        {
+          "partIndex": 0,
+          "partOffsets": [
+            -1,
+            0
+          ],
+          "mode": "increasing"
+        }
+      ]
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_bestGlobalAllocation"
+          },
+          "width": 25.2
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_bestGlobalSolutionDistanceToStation"
+          },
+          "width": 26.25
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "i_loc",
+          "width": 26.3
+        }
+      ]
+    },
+    "name": {
+      "literal": "Assignments"
+    },
+    "title": {
+      "literal": "EV to Station Allocations"
     },
     "views": {
       "literal": {}
@@ -599,23 +679,52 @@
       "literal": "template"
     }
   },
-  "widgets/Distance to Station": {
+  "widgets/EV Allocations": {
     "aimms.widget.type": {
-      "literal": "barchart"
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "p_bestGlobalAllocation",
+          "p_bestGlobalSolutionDistanceToStation"
+        ]
+      }
     },
     "contents.partition": {
       "literal": {
-        "header": [
-          "i_loc",
+        "rowHeader": [
+          "i_loc"
+        ],
+        "colHeader": [
           "<IDENTIFIER-SET>"
         ],
-        "grouped": [],
-        "stacked": [],
         "aggregated": []
       }
     },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_bestGlobalAllocation"
+          },
+          "width": 27.7
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_bestGlobalSolutionDistanceToStation"
+          },
+          "width": 28.75
+        }
+      ]
+    },
     "name": {
-      "literal": "Distance to Station"
+      "literal": "EV Allocations"
+    },
+    "title": {
+      "literal": "EV to Station Allocations"
     },
     "views": {
       "literal": {}
@@ -769,10 +878,10 @@
       ]
     },
     "center.latitude": {
-      "literal": 39.206718844918505
+      "literal": 39.90286850918541
     },
     "center.longitude": {
-      "literal": -76.36596679687501
+      "literal": -76.82739257812501
     },
     "heatmaps.__display_order__": {
       "literal": [
@@ -961,6 +1070,84 @@
     },
     "title": {
       "literal": "Other Controls"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/Station Cost Breakdown": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "p_bestGlobalSolutionDrivingCost",
+          "p_bestGlobalSolutionChargerCost",
+          "p_bestGlobalSolutionNumberOfVehicles"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "i_particle"
+        ],
+        "colHeader": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "rowHeader",
+          "colKey": "i_particle",
+          "width": 26.3
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_bestGlobalSolutionConstructionCost"
+          },
+          "width": 21.66
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_bestGlobalSolutionMaintenanceCost"
+          },
+          "width": 27.7
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_bestGlobalSolutionNumberOfChargers"
+          },
+          "width": 20.2
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_bestGlobalSolutionChargerCost"
+          },
+          "width": 27.02
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_bestGlobalSolutionNumberOfVehicles"
+          },
+          "width": 20.2
+        }
+      ]
+    },
+    "name": {
+      "literal": "Station Cost Breakdown"
+    },
+    "title": {
+      "literal": "Station Data"
     },
     "views": {
       "literal": {}

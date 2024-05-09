@@ -251,6 +251,12 @@ Model Main_EVChargingLocations {
 		Parameter p_bestGlobalSolutionChargerCost {
 			IndexDomain: i_particle;
 		}
+		Parameter p_bestGlobalSolutionTotalCost {
+			IndexDomain: i_particle;
+		}
+		Parameter p_bestGlobalSolutionNumberOfVehicles {
+			IndexDomain: i_particle;
+		}
 		Parameter p_bestGlobalSolutionNumberOfChargers {
 			IndexDomain: i_particle;
 		}
@@ -495,6 +501,8 @@ Model Main_EVChargingLocations {
 				
 				if p_totalObjectiveCost(ep_loc_globalBest) < p_bestGlobalSolutionCost then
 				
+					p_bestGlobalAllocation(i_loc) := ep_nClosestLocation(i_loc, ep_loc_globalBest);
+				
 					p_bestGlobalSolutionCost := p_totalObjectiveCost(ep_loc_globalBest);
 				
 					! Store the global best locations
@@ -505,11 +513,15 @@ Model Main_EVChargingLocations {
 					p_bestGlobalSolutionHappinessScore := 1 - sum(i_loc, bp_def_unallocatedLocations(i_loc,ep_loc_globalBest)) /$ card(i_loc);
 					p_bestGlobalSolutionMaintenanceCost(i_particle) := p_maintenanceCost * bp_def_activeStation(i_particle, ep_loc_globalBest);
 					p_bestGlobalSolutionConstructionCost(i_particle) := p_constructionCost * bp_def_activeStation(i_particle, ep_loc_globalBest);
-					p_bestGlobalSolutionNumberOfChargers(i_particle) := p_allocationCount(i_particle, ep_loc_globalBest);
+					p_bestGlobalSolutionDrivingCost(i_particle) := sum(i_loc | p_bestGlobalAllocation(i_loc) = i_particle, p_def_drivingCost(i_loc, ep_loc_globalBest));
+					p_bestGlobalSolutionChargerCost(i_particle) := sum(i_loc | p_bestGlobalAllocation(i_loc) = i_particle, p_def_chargingCost(i_loc, ep_loc_globalBest));
+					p_bestGlobalSolutionNumberOfVehicles(i_particle) := p_allocationCount(i_particle, ep_loc_globalBest);
+					p_bestGlobalSolutionTotalCost(i_particle) := p_bestGlobalSolutionMaintenanceCost(i_particle)
+																	+ p_bestGlobalSolutionConstructionCost(i_particle)
+																	+ p_bestGlobalSolutionDrivingCost(i_particle)
+																	+ p_bestGlobalSolutionChargerCost(i_particle);
 				
 					p_bestGlobalSolutionDistanceToStation(i_loc) := p_distances(ep_nClosestLocation(i_loc,ep_loc_globalBest), i_loc, ep_loc_globalBest);
-				
-					p_bestGlobalAllocation(i_loc) := ep_nClosestLocation(i_loc, ep_loc_globalBest);
 				
 				endif;
 				endblock;
@@ -565,7 +577,7 @@ Model Main_EVChargingLocations {
 				
 				! Number of chargers per station
 				for i_charger in s_chargers do
-					p_chargersPerStation_hist(i_charger) := sum[i_particle | p_bestGlobalSolutionNumberOfChargers(i_particle) = Val(i_charger), 1 $ p_bestGlobalSolutionNumberOfChargers(i_particle)];
+					p_chargersPerStation_hist(i_charger) := sum[i_particle | p_bestGlobalSolutionNumberOfVehicles(i_particle) = Val(i_charger), 1 $ p_bestGlobalSolutionNumberOfVehicles(i_particle)];
 				endfor;
 			}
 		}
