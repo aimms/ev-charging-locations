@@ -1,13 +1,6 @@
 ## ams_version=1.0
 
 Model Main_EVChargingLocations {
-	Section UI_Model {
-		DeclarationSection Map {
-			Parameter NodeSize {
-				Definition: 10;
-			}
-		}
-	}
 	Section Data_Model {
 		Section Quantities_and_Units {
 			Comment: {
