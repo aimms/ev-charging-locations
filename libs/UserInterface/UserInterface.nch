@@ -8,3 +8,5 @@
 "pr_readDefaultData" "ui::pr_readDefaultData" "2024-04-26 18:20:50"
 "ui::sp_problemTitle" "ui::sp_def_problemTitle" "2024-05-08 19:18:04"
 "ui::Copy_sp_def_problemTitle" "ui::sp_def_algorithmTitle" "2024-05-08 19:18:19"
+"ui::sp_def_pageAction" "ui::sp_def_pageActionMyPrimaryActions" "2024-05-09 19:04:14"
+"ui::sp_def_pageActionMyPrimaryActions" "ui::sp_def_controlPanelPrimaryPageAction" "2024-05-09 19:27:49"

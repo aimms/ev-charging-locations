@@ -303,6 +303,25 @@
     "layoutId": {
       "literal": "custom_c7d7602f-353b-4e73-ae4c-29e8a431ad35"
     },
+    "primarypageaction": {
+      "aimms": {
+        "contents": [
+          "ui::sp_def_controlPanelPrimaryPageAction"
+        ],
+        "slices": [
+          {
+            "identifier": "ui::sp_def_controlPanelPrimaryPageAction",
+            "slice": [
+              {
+                "index": "webui::indexPageActionSpec",
+                "type": "free",
+                "value": "webui::indexPageActionSpec"
+              }
+            ]
+          }
+        ]
+      }
+    },
     "widgets": {
       "literal": [
         {
@@ -757,10 +776,10 @@
       ]
     },
     "center.latitude": {
-      "literal": 37.68609598885124
+      "literal": 48.15597660136513
     },
     "center.longitude": {
-      "literal": -83.23147298836031
+      "literal": -88.69611666219188
     },
     "heatmaps.__display_order__": {
       "literal": [
@@ -913,7 +932,7 @@
       "literal": "template"
     },
     "zoom": {
-      "literal": 4
+      "literal": 3
     }
   },
   "widgets/Other Parameters": {

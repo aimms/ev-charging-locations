@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<TemplateManager>
+	<Page Name="All Data Pages" PageGUID="36D71744-1B5B-4CAF-AA65-CC00C994A7ED" />
+	<Page Name="[Data Page] p_currentSolutionX" PageGUID="DD207168-9CB5-4DFE-9836-4D10B66DAF83" />
+	<Page Name="[Data Page] p_bestGlobalSolutionX" PageGUID="1DBC39F3-9325-4BC8-B46B-9E6721AA4BEE" />
+</TemplateManager>

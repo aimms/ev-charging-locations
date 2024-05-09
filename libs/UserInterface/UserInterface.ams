@@ -73,10 +73,20 @@ LibraryModule UserInterface {
 			StringParameter sp_def_algorithmTitle {
 				Definition: "Algorithm Parameters";
 			}
+			StringParameter sp_def_controlPanelPrimaryPageAction {
+				IndexDomain: webui::indexPageActionSpec;
+				Definition: {
+					data 
+					{ displaytext : "Run"               ,  icon        : "aimms-stack-play"  ,  procedure   : "pr_runPSOAlgorithm",
+					  state       : "active"             }
+				}
+			}
 		}
 		Section Progress_Page;
 		Section Results_Page;
 	}
+	Procedure pr_yToLatitude;
+	Procedure pr_xToLongitude;
 	Procedure LibraryInitialization {
 		Comment: "Add initialization statements here that do not require any other library being initialized already.";
 	}
