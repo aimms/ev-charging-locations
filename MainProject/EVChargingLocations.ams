@@ -234,6 +234,10 @@ Model Main_EVChargingLocations {
 		Parameter p_bestGlobalSolutionCost {
 			Default: 999999999;
 		}
+		ElementParameter p_bestGlobalAllocation {
+			IndexDomain: i_loc;
+			Range: s_def_particles;
+		}
 		Parameter p_bestGlobalSolutionHappinessScore;
 		Parameter p_bestGlobalSolutionMaintenanceCost {
 			IndexDomain: i_particle;
@@ -504,6 +508,8 @@ Model Main_EVChargingLocations {
 					p_bestGlobalSolutionNumberOfChargers(i_particle) := p_allocationCount(i_particle, ep_loc_globalBest);
 				
 					p_bestGlobalSolutionDistanceToStation(i_loc) := p_distances(ep_nClosestLocation(i_loc,ep_loc_globalBest), i_loc, ep_loc_globalBest);
+				
+					p_bestGlobalAllocation(i_loc) := ep_nClosestLocation(i_loc, ep_loc_globalBest);
 				
 				endif;
 				endblock;

@@ -542,7 +542,7 @@
       "literal": "Chargers Per Station (1)"
     },
     "title": {
-      "literal": "Number of Chargers per Station"
+      "literal": "Distribution of Chargers per Station"
     },
     "views": {
       "literal": {}
@@ -662,6 +662,18 @@
     },
     "views": {
       "literal": {}
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0",
+        "views.1"
+      ]
+    },
+    "views.0.type": {
+      "literal": "view"
+    },
+    "views.1.type": {
+      "literal": "template"
     }
   },
   "widgets/img_homeLogo": {
@@ -757,10 +769,10 @@
       ]
     },
     "center.latitude": {
-      "literal": 37.68609598885124
+      "literal": 39.206718844918505
     },
     "center.longitude": {
-      "literal": -83.23147298836031
+      "literal": -76.36596679687501
     },
     "heatmaps.__display_order__": {
       "literal": [
@@ -913,7 +925,7 @@
       "literal": "template"
     },
     "zoom": {
-      "literal": 4
+      "literal": 6
     }
   },
   "widgets/Other Parameters": {
