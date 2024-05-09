@@ -55,6 +55,14 @@ Model Main_EVChargingLocations {
 				Text: "Set of locations.";
 				Index: i_loc1;
 			}
+			Set s_chargers {
+				Index: i_charger;
+				Definition: {
+					ElementRange(
+						From    :  1, 
+						To      :  p_maxNumberChargersPerStation)
+				}
+			}
 			Index i_loc {
 				Range: s_locations;
 				dex::ColumnName: Location;
@@ -121,6 +129,11 @@ Model Main_EVChargingLocations {
 			Parameter p_initial_velocity {
 				InitialData: 5;
 			}
+			Parameter p_spawn_region {
+				Text: "Region in which particles each particle is spawned in an individual.";
+				InitialData: 0.09;
+				Comment: "Distance from an initial \'spawn\' location within which a particle can be initialized.";
+			}
 		}
 	}
 	Section PSO_Model {
@@ -139,6 +152,10 @@ Model Main_EVChargingLocations {
 				InitialData: 50;
 			}
 			ElementParameter ep_nClosestLocation {
+				IndexDomain: (i_loc,i_indv);
+				Range: s_def_particles;
+			}
+			ElementParameter ep_globalBestAllocations {
 				IndexDomain: (i_loc,i_indv);
 				Range: s_def_particles;
 			}
@@ -217,6 +234,25 @@ Model Main_EVChargingLocations {
 		Parameter p_bestGlobalSolutionCost {
 			Default: 999999999;
 		}
+		Parameter p_bestGlobalSolutionHappinessScore;
+		Parameter p_bestGlobalSolutionMaintenanceCost {
+			IndexDomain: i_particle;
+		}
+		Parameter p_bestGlobalSolutionConstructionCost {
+			IndexDomain: i_particle;
+		}
+		Parameter p_bestGlobalSolutionDrivingCost {
+			IndexDomain: i_particle;
+		}
+		Parameter p_bestGlobalSolutionChargerCost {
+			IndexDomain: i_particle;
+		}
+		Parameter p_bestGlobalSolutionNumberOfChargers {
+			IndexDomain: i_particle;
+		}
+		Parameter p_bestGlobalSolutionDistanceToStation {
+			IndexDomain: i_loc;
+		}
 		Parameter p_bestLocalSolutionCost {
 			IndexDomain: (i_indv);
 			Default: inf;
@@ -262,8 +298,6 @@ Model Main_EVChargingLocations {
 				p_initialParticleLocationsX(i_particle) := Uniform(p_loc_xMin, p_loc_xMax);
 				p_initialParticleLocationsY(i_particle) := Uniform(p_loc_yMin, p_loc_yMax);
 				
-				p_spawn_region := 10;
-				
 				! Starting locations for the particles in each individual
 				p_currentSolutionX(i_indv, i_particle) 
 				:=  p_initialParticleLocationsX(i_particle) 
@@ -275,8 +309,8 @@ Model Main_EVChargingLocations {
 				
 				! Starting velocities
 				p_loc_binomial(i_indv,i_particle) := Binomial(0.5, 1);
-				p_currentSolutionVelocityX(i_indv, i_particle) := (-1 * (1 - p_loc_binomial(i_indv,i_particle)) + p_loc_binomial(i_indv,i_particle)) * Normal(p_initial_velocity, p_initial_velocity/2);
-				p_currentSolutionVelocityY(i_indv, i_particle) := (-1 * (1 - p_loc_binomial(i_indv,i_particle)) + p_loc_binomial(i_indv,i_particle)) * Normal(p_initial_velocity, p_initial_velocity/2);
+				p_currentSolutionVelocityX(i_indv, i_particle) := (-1 + 2 * p_loc_binomial(i_indv,i_particle)) * Normal(p_initial_velocity, p_initial_velocity/2);
+				p_currentSolutionVelocityY(i_indv, i_particle) := (-1 + 2 * p_loc_binomial(i_indv,i_particle)) * Normal(p_initial_velocity, p_initial_velocity/2);
 				
 				endblock;
 				
@@ -296,7 +330,7 @@ Model Main_EVChargingLocations {
 				block ! Initiate Social Component 
 				
 				! Select random individual as the initial best global
-				ep_individual := StringToElement(s_def_individuals, round(uniform(0, p_populationSize)));
+				ep_individual := StringToElement(s_def_individuals, FormatString("i%n", round(uniform(0, p_populationSize))));
 				
 				! Set the best local solution as something close to the initial solution
 				p_bestGlobalSolutionX(i_particle) := p_currentSolutionX(ep_individual, i_particle);
@@ -306,10 +340,6 @@ Model Main_EVChargingLocations {
 				
 				p_bestLocalSolutionCost(i_indv) := inf;
 				p_bestGlobalSolutionCost := inf;
-			}
-			Parameter p_spawn_region {
-				Text: "Region in which particles each particle is spawned in an individual.";
-				Comment: "Distance from an initial \'spawn\' location within which a particle can be initialized.";
 			}
 			Parameter p_loc_xMin {
 				Text: "Lowerbound for x-domain.";
@@ -366,7 +396,7 @@ Model Main_EVChargingLocations {
 						for i_n_clos in {1 .. p_def_nClosest} do
 				
 							! Now, if we manage an allocation then stop looking for the next N closest
-							ep_loc_particle(i_loc,i_n_clos,i_indv) := argmin(i_particle | p_loc_distances(i_particle,i_loc,i_indv) and (0.1 * p_allocationCount(i_particle,i_indv) < 2 * p_maxNumberChargersPerStation), p_loc_distances(i_particle,i_loc,i_indv));
+							ep_loc_particle(i_loc,i_n_clos,i_indv) := argmin(i_particle | p_loc_distances(i_particle,i_loc,i_indv) and (0.35 * p_allocationCount(i_particle,i_indv) < 2 * p_maxNumberChargersPerStation), p_loc_distances(i_particle,i_loc,i_indv));
 							ep_nClosestLocation(i_loc,i_indv) := ep_loc_particle(i_loc,i_n_clos,i_indv);
 							p_allocationCount(ep_loc_particle(i_loc,i_n_clos,i_indv),i_indv) += 1;
 							p_loc_distances(ep_loc_particle(i_loc,i_n_clos,i_indv),i_loc,i_indv) := 0;
@@ -394,6 +424,8 @@ Model Main_EVChargingLocations {
 		}
 		Procedure pr_evaluateCost {
 			Body: {
+				! Total costs
+				block
 				p_totalConstructionCost(i_indv) 
 				:=  p_constructionCost * sum(i_particle, bp_def_activeStation(i_particle, i_indv));
 				
@@ -417,6 +449,7 @@ Model Main_EVChargingLocations {
 					+ p_totalConstructionCost(i_indv)
 					+ p_totalMaintenanceCost(i_indv)
 					+ p_totalPenaltyCost(i_indv);
+				endblock;
 			}
 		}
 		Procedure pr_updateVariations {
@@ -424,15 +457,17 @@ Model Main_EVChargingLocations {
 				block ! Apply the velocity update 
 				p_previousSolutionVelocityX(i_indv,i_particle) := p_currentSolutionVelocityX(i_indv,i_particle);
 				p_previousSolutionVelocityY(i_indv,i_particle) := p_currentSolutionVelocityY(i_indv,i_particle);
+				p_previousSolutionX(i_indv,i_particle) := p_currentSolutionX(i_indv,i_particle);
+				p_previousSolutionY(i_indv,i_particle) := p_currentSolutionY(i_indv,i_particle);
 				
 				p_loc_inertiaX(i_indv,i_particle) := p_inertiaComponent * p_previousSolutionVelocityX(i_indv,i_particle);
 				p_loc_inertiaY(i_indv,i_particle) := p_inertiaComponent * p_previousSolutionVelocityY(i_indv,i_particle);
 				
-				p_loc_cognitiveX(i_indv,i_particle) := p_cognitiveComponent * (p_bestLocalSolutionX(i_indv,i_particle) - p_currentSolutionX(i_indv,i_particle));
-				p_loc_cognitiveY(i_indv,i_particle) := p_cognitiveComponent * (p_bestLocalSolutionY(i_indv,i_particle) - p_currentSolutionY(i_indv,i_particle));
+				p_loc_cognitiveX(i_indv,i_particle) := p_cognitiveComponent * (p_bestLocalSolutionX(i_indv,i_particle) - p_previousSolutionX(i_indv,i_particle));
+				p_loc_cognitiveY(i_indv,i_particle) := p_cognitiveComponent * (p_bestLocalSolutionY(i_indv,i_particle) - p_previousSolutionY(i_indv,i_particle));
 				
-				p_loc_socialX(i_indv,i_particle) := p_socialComponent * (p_bestGlobalSolutionX(i_particle) - p_currentSolutionX(i_indv,i_particle));
-				p_loc_socialY(i_indv,i_particle) := p_socialComponent * (p_bestGlobalSolutionY(i_particle) - p_currentSolutionY(i_indv,i_particle));
+				p_loc_socialX(i_indv,i_particle) := p_socialComponent * (p_bestGlobalSolutionX(i_particle) - p_previousSolutionX(i_indv,i_particle));
+				p_loc_socialY(i_indv,i_particle) := p_socialComponent * (p_bestGlobalSolutionY(i_particle) - p_previousSolutionY(i_indv,i_particle));
 				
 				p_currentSolutionVelocityX(i_indv,i_particle) 
 				:=  p_loc_inertiaX(i_indv,i_particle) 
@@ -447,9 +482,6 @@ Model Main_EVChargingLocations {
 				endblock;
 				
 				block ! Apply the position update 
-				p_previousSolutionX(i_indv,i_particle) := p_currentSolutionX(i_indv,i_particle);
-				p_previousSolutionY(i_indv,i_particle) := p_currentSolutionY(i_indv,i_particle);
-				
 				p_currentSolutionX(i_indv,i_particle) := p_previousSolutionX(i_indv,i_particle) + p_currentSolutionVelocityX(i_indv,i_particle);
 				p_currentSolutionY(i_indv,i_particle) := p_previousSolutionY(i_indv,i_particle) + p_currentSolutionVelocityY(i_indv,i_particle);
 				endblock;
@@ -461,8 +493,17 @@ Model Main_EVChargingLocations {
 				
 					p_bestGlobalSolutionCost := p_totalObjectiveCost(ep_loc_globalBest);
 				
+					! Store the global best locations
 					p_bestGlobalSolutionX(i_particle) := p_currentSolutionX(ep_loc_globalBest,i_particle);
 					p_bestGlobalSolutionY(i_particle) := p_currentSolutionY(ep_loc_globalBest,i_particle);
+				
+					! Store the global best KPIs
+					p_bestGlobalSolutionHappinessScore := 1 - sum(i_loc, bp_def_unallocatedLocations(i_loc,ep_loc_globalBest)) /$ card(i_loc);
+					p_bestGlobalSolutionMaintenanceCost(i_particle) := p_maintenanceCost * bp_def_activeStation(i_particle, ep_loc_globalBest);
+					p_bestGlobalSolutionConstructionCost(i_particle) := p_constructionCost * bp_def_activeStation(i_particle, ep_loc_globalBest);
+					p_bestGlobalSolutionNumberOfChargers(i_particle) := p_allocationCount(i_particle, ep_loc_globalBest);
+				
+					p_bestGlobalSolutionDistanceToStation(i_loc) := p_distances(ep_nClosestLocation(i_loc,ep_loc_globalBest), i_loc, ep_loc_globalBest);
 				
 				endif;
 				endblock;
@@ -515,6 +556,11 @@ Model Main_EVChargingLocations {
 					p_globalBestFitness(i_gen) := p_bestGlobalSolutionCost;
 				
 				endfor;
+				
+				! Number of chargers per station
+				for i_charger in s_chargers do
+					p_chargersPerStation_hist(i_charger) := sum[i_particle | p_bestGlobalSolutionNumberOfChargers(i_particle) = Val(i_charger), 1 $ p_bestGlobalSolutionNumberOfChargers(i_particle)];
+				endfor;
 			}
 		}
 		Procedure pr_resetPSO {
@@ -528,6 +574,9 @@ Model Main_EVChargingLocations {
 			}
 			Parameter p_globalBestFitness {
 				IndexDomain: i_gen;
+			}
+			Parameter p_chargersPerStation_hist {
+				IndexDomain: (i_charger);
 			}
 		}
 	}

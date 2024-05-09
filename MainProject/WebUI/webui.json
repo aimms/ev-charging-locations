@@ -188,6 +188,55 @@
       "literal": "ControlPanelPage"
     }
   },
+  "layouts/custom_fa5bd0d7-7e27-4a9d-bb41-8d329fda8c60": {
+    "definition": {
+      "literal": {
+        "componentName": "Grid",
+        "props": {
+          "gridTemplateColumns": "3fr 1fr",
+          "gridTemplateRows": "1fr 0.5fr 1fr",
+          "gridTemplateAreas": "\"area-a area-b\" \"area-a area-c\" \"area-a area-d\""
+        },
+        "items": [
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-a",
+              "name": "Area A",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-b",
+              "name": "Area B",
+              "gridAutoFlow": "row"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-c",
+              "name": "Area C",
+              "gridAutoFlow": "row"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-d",
+              "name": "Area D",
+              "gridAutoFlow": "row"
+            }
+          }
+        ]
+      }
+    },
+    "displayName": {
+      "literal": "Results Page"
+    }
+  },
   "pages/allocation": {
     "bindings": {
       "literal": [
@@ -378,17 +427,53 @@
         {
           "widgetUri": "map",
           "gridArea": "area-a",
-          "dndId": "Unassigned widgetsmap"
+          "dndId": "area-amap0"
+        },
+        {
+          "widgetUri": "Chargers Per Station_1",
+          "gridArea": "area-b",
+          "dndId": "area-bChargers Per Station_11"
+        },
+        {
+          "widgetUri": "Happiness",
+          "gridArea": "area-c",
+          "dndId": "area-cHappiness2"
+        },
+        {
+          "widgetUri": "Distance to Station",
+          "gridArea": "area-d",
+          "dndId": "Unassigned widgetsDistance to Station"
         }
       ]
     },
     "layoutId": {
-      "literal": "Layout10"
+      "literal": "custom_fa5bd0d7-7e27-4a9d-bb41-8d329fda8c60"
     },
     "widgets": {
       "literal": [
         {
           "uri": "map",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "Chargers Per Station_1",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "Happiness",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "Distance to Station",
           "layoutInfo": {
             "width": "2",
             "height": "1"
@@ -410,9 +495,13 @@
           "p_inertiaComponent",
           "p_cognitiveComponent",
           "p_socialComponent",
-          "p_initial_velocity"
+          "p_initial_velocity",
+          "p_spawn_region"
         ]
       }
+    },
+    "contents.numdecimals": {
+      "literal": 3
     },
     "custom.column.widths": {
       "literal": [
@@ -433,6 +522,27 @@
     },
     "title": {
       "literal": "PSO Controls"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/Chargers Per Station_1": {
+    "aimms.widget.type": {
+      "literal": "barchart"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "p_chargersPerStation_hist"
+        ]
+      }
+    },
+    "name": {
+      "literal": "Chargers Per Station (1)"
+    },
+    "title": {
+      "literal": "Number of Chargers per Station"
     },
     "views": {
       "literal": {}
@@ -489,6 +599,28 @@
       "literal": "template"
     }
   },
+  "widgets/Distance to Station": {
+    "aimms.widget.type": {
+      "literal": "barchart"
+    },
+    "contents.partition": {
+      "literal": {
+        "header": [
+          "i_loc",
+          "<IDENTIFIER-SET>"
+        ],
+        "grouped": [],
+        "stacked": [],
+        "aggregated": []
+      }
+    },
+    "name": {
+      "literal": "Distance to Station"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
   "widgets/Fitness Chart": {
     "aimms.widget.type": {
       "literal": "linechart"
@@ -506,6 +638,27 @@
     },
     "title": {
       "literal": "Performance"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/Happiness": {
+    "aimms.widget.type": {
+      "literal": "scalar"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "p_bestGlobalSolutionHappinessScore"
+        ]
+      }
+    },
+    "name": {
+      "literal": "Happiness"
+    },
+    "title": {
+      "literal": "Happiness Score"
     },
     "views": {
       "literal": {}
@@ -604,10 +757,10 @@
       ]
     },
     "center.latitude": {
-      "literal": 21.89266410145681
+      "literal": 37.68609598885124
     },
     "center.longitude": {
-      "literal": -50.2960512607444
+      "literal": -83.23147298836031
     },
     "heatmaps.__display_order__": {
       "literal": [
