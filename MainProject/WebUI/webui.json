@@ -539,74 +539,6 @@
       "literal": {}
     }
   },
-  "widgets/Assignments": {
-    "aimms.widget.type": {
-      "literal": "table"
-    },
-    "contents": {
-      "aimms": {
-        "contents": [
-          "p_bestGlobalAllocation",
-          "p_bestGlobalSolutionDistanceToStation"
-        ]
-      }
-    },
-    "contents.partition": {
-      "literal": {
-        "rowHeader": [
-          "i_loc"
-        ],
-        "colHeader": [
-          "<IDENTIFIER-SET>"
-        ],
-        "aggregated": []
-      }
-    },
-    "contents.sorting": {
-      "literal": [
-        {
-          "partIndex": 0,
-          "partOffsets": [
-            -1,
-            0
-          ],
-          "mode": "increasing"
-        }
-      ]
-    },
-    "custom.column.widths": {
-      "literal": [
-        {
-          "type": "colHeader",
-          "colKey": {
-            "<IDENTIFIER-SET>": "p_bestGlobalAllocation"
-          },
-          "width": 25.2
-        },
-        {
-          "type": "colHeader",
-          "colKey": {
-            "<IDENTIFIER-SET>": "p_bestGlobalSolutionDistanceToStation"
-          },
-          "width": 26.25
-        },
-        {
-          "type": "rowHeader",
-          "colKey": "i_loc",
-          "width": 26.3
-        }
-      ]
-    },
-    "name": {
-      "literal": "Assignments"
-    },
-    "title": {
-      "literal": "EV to Station Allocations"
-    },
-    "views": {
-      "literal": {}
-    }
-  },
   "widgets/Chargers Per Station_1": {
     "aimms.widget.type": {
       "literal": "barchart"
@@ -878,10 +810,10 @@
       ]
     },
     "center.latitude": {
-      "literal": 39.90286850918541
+      "literal": 41.04201188266965
     },
     "center.longitude": {
-      "literal": -76.82739257812501
+      "literal": -77.17346191406251
     },
     "heatmaps.__display_order__": {
       "literal": [
@@ -1034,7 +966,7 @@
       "literal": "template"
     },
     "zoom": {
-      "literal": 6
+      "literal": 7
     }
   },
   "widgets/Other Parameters": {
