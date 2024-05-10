@@ -1,0 +1,11 @@
+.annotation-histogram{
+    fill: var(--color1);
+}
+
+.annotation-station{
+    fill: var(--color2);
+}
+
+.annotation-ev {
+    fill: var(--primary)
+}

@@ -4,3 +4,11 @@
     font-size: large;
     color: white;
 }
+
+
+/*Centering cells*/
+.tag-table .cell.flag-string .cell-wrapper, 
+.tag-table .cell.flag-number input,
+.tag-table .cell.flag-string input{
+  text-align: center;
+}

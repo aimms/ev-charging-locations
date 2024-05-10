@@ -29,6 +29,7 @@ Model Main_EVChargingLocations {
 						To      :  p_numberParticles, 
 						Prefix  :  "p")
 				}
+				webui::AnnotationsIdentifier: ui::sp_def_stationNodeColor(i_particle);
 			}
 			Set s_def_generations {
 				Text: "Number of generations the algorithm runs for.";
@@ -54,6 +55,7 @@ Model Main_EVChargingLocations {
 			Set s_locations {
 				Text: "Set of locations.";
 				Index: i_loc1;
+				webui::AnnotationsIdentifier: ui::sp_def_evNodeColor(i_loc);
 			}
 			Set s_chargers {
 				Index: i_charger;
@@ -263,8 +265,11 @@ Model Main_EVChargingLocations {
 			ElementParameter p_bestGlobalAllocation {
 				IndexDomain: i_loc;
 				Range: s_def_particles;
+				webui::FlagsIdentifier: ui::sp_def_readOnly;
 			}
-			Parameter p_bestGlobalSolutionHappinessScore;
+			Parameter p_bestGlobalSolutionHappinessScore {
+				webui::FlagsIdentifier: ui::sp_def_readOnly;
+			}
 			Parameter p_bestGlobalSolutionMaintenanceCost {
 				IndexDomain: i_particle;
 			}
@@ -273,21 +278,25 @@ Model Main_EVChargingLocations {
 			}
 			Parameter p_bestGlobalSolutionDrivingCost {
 				IndexDomain: i_particle;
+				webui::FlagsIdentifier: ui::sp_def_readOnly;
 			}
 			Parameter p_bestGlobalSolutionChargerCost {
 				IndexDomain: i_particle;
+				webui::FlagsIdentifier: ui::sp_def_readOnly;
 			}
 			Parameter p_bestGlobalSolutionTotalCost {
 				IndexDomain: i_particle;
 			}
 			Parameter p_bestGlobalSolutionNumberOfVehicles {
 				IndexDomain: i_particle;
+				webui::FlagsIdentifier: ui::sp_def_readOnly;
 			}
 			Parameter p_bestGlobalSolutionNumberOfChargers {
 				IndexDomain: i_particle;
 			}
 			Parameter p_bestGlobalSolutionDistanceToStation {
 				IndexDomain: i_loc;
+				webui::FlagsIdentifier: ui::sp_def_readOnly;
 			}
 			Parameter p_bestLocalSolutionCost {
 				IndexDomain: (i_indv);
@@ -592,8 +601,6 @@ Model Main_EVChargingLocations {
 		}
 		Procedure pr_runPSOAlgorithm {
 			Body: {
-				webui::OpenPage(pageId :  'allocation');
-				
 				pr_initializeProblem;
 				
 				for (i_gen in s_def_generations) do
@@ -607,11 +614,7 @@ Model Main_EVChargingLocations {
 				
 				endfor;
 				
-				! Number of chargers per station
-				for i_charger in s_chargers do
-					p_chargersPerStation_hist(i_charger) := sum[i_particle | p_bestGlobalSolutionNumberOfVehicles(i_particle) = Val(i_charger), 1 $ p_bestGlobalSolutionNumberOfVehicles(i_particle)];
-				endfor;
-				
+				ui::pr_calculateHistograms;
 				ui::pr_calculateSolutionPoints;
 			}
 		}
@@ -626,9 +629,6 @@ Model Main_EVChargingLocations {
 			}
 			Parameter p_globalBestFitness {
 				IndexDomain: i_gen;
-			}
-			Parameter p_chargersPerStation_hist {
-				IndexDomain: (i_charger);
 			}
 		}
 	}

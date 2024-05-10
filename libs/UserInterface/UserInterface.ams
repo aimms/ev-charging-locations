@@ -34,16 +34,11 @@ LibraryModule UserInterface {
 					  ( 1, 3, pageId            ) : "control_panel",
 					  ( 1, 3, tooltip           ) : "Overview of all the sets",
 					  ( 1, 3, workflowPageState ) : "Active",
-					  ( 1, 4, displayText       ) : "Progress",
-					  ( 1, 4, icon              ) : "aimms-spinner6",
-					  ( 1, 4, pageId            ) : "allocation",
-					  ( 1, 4, tooltip           ) : "Overview of all the data",
-					  ( 1, 4, workflowPageState ) : "Active",
-					  ( 1, 5, displayText       ) : "Results",
-					  ( 1, 5, icon              ) : "aimms-compass5",
-					  ( 1, 5, pageId            ) : "results",
-					  ( 1, 5, tooltip           ) : "Location data",
-					  ( 1, 5, workflowPageState ) : "Active" }
+					  ( 1, 4, displayText       ) : "Results",
+					  ( 1, 4, icon              ) : "aimms-compass5",
+					  ( 1, 4, pageId            ) : "results",
+					  ( 1, 4, tooltip           ) : "Location data",
+					  ( 1, 4, workflowPageState ) : "Active" }
 				}
 			}
 			StringParameter sp_systemWorkflowFoldingStates {
@@ -114,6 +109,60 @@ LibraryModule UserInterface {
 		}
 		Section Progress_Page;
 		Section Results_Page {
+			Set s_histogramSlices {
+				Index: i_slice;
+				Parameter: ep_histogramSlice;
+			}
+			Set s_histogramDistanceToStationSlices {
+				SubsetOf: s_histogramSlices;
+				Index: i_sliceDistanceToStation;
+				Definition: {
+					{ui::i_slice | sp_distanceToStationSliceDescription(ui::i_slice)}
+				}
+				webui::ElementTextIdentifier: sp_distanceToStationSliceDescription(ui::i_slice);
+			}
+			Set s_histogramNumberOfVehiclesSlices {
+				SubsetOf: s_histogramSlices;
+				Index: i_sliceNumberOfVehicles;
+				Definition: {
+					{ui::i_slice | sp_numberOfVehiclesSliceDescription(ui::i_slice)}
+				}
+				webui::ElementTextIdentifier: sp_numberOfVehiclesSliceDescription(ui::i_slice);
+			}
+			Parameter p_histogramSlices;
+			Parameter p_distanceToStationHistogram {
+				IndexDomain: i_slice;
+				webui::AnnotationsIdentifier: sp_histogramAnnotation;
+			}
+			StringParameter sp_distanceToStationSliceDescription {
+				IndexDomain: i_slice;
+			}
+			Parameter p_numberOfVehiclesHistogram {
+				IndexDomain: i_slice;
+				webui::AnnotationsIdentifier: sp_histogramAnnotation;
+			}
+			StringParameter sp_numberOfVehiclesSliceDescription {
+				IndexDomain: i_slice;
+			}
+			Parameter p_bestGlobalSolutionLongitude {
+				IndexDomain: (i_particle);
+				Text: "Best global solution X coordinate.";
+			}
+			Parameter p_bestGlobalSolutionLatitude {
+				IndexDomain: (i_particle);
+				Text: "Best global solution Y coordinate.";
+			}
+			StringParameter sp_histogramAnnotation {
+				Definition: "histogram";
+			}
+			StringParameter sp_def_evNodeColor {
+				IndexDomain: i_loc;
+				Definition: "ev";
+			}
+			StringParameter sp_def_stationNodeColor {
+				IndexDomain: i_particle;
+				Definition: "station";
+			}
 			Procedure pr_calculateSolutionPoints {
 				Body: {
 					empty p_bestGlobalSolutionLatitude, p_bestGlobalSolutionLongitude;
@@ -135,13 +184,65 @@ LibraryModule UserInterface {
 				Parameter p_loc_maxX;
 				Parameter p_loc_maxY;
 			}
-			Parameter p_bestGlobalSolutionLongitude {
-				IndexDomain: (i_particle);
-				Text: "Best global solution X coordinate.";
-			}
-			Parameter p_bestGlobalSolutionLatitude {
-				IndexDomain: (i_particle);
-				Text: "Best global solution Y coordinate.";
+			Procedure pr_calculateHistograms {
+				Body: {
+					p_histogramSlices := 10;
+					s_histogramSlices := {1 .. 100}; !fixed
+					
+					!@TODO Delete
+					!! Number of chargers per station
+					!for i_charger in s_chargers do
+					!	p_chargersPerStation_hist(i_charger) 
+					!	:=  sum(i_particle | p_bestGlobalSolutionNumberOfVehicles(i_particle) = Val(i_charger), 1 $ p_bestGlobalSolutionNumberOfVehicles(i_particle));
+					!endfor;
+					
+					block ! DistanceToStation Histogram
+					empty p_distanceToStationHistogram, sp_distanceToStationSliceDescription;
+					
+					HistogramCreate(p_loc_histID);
+					HistogramSetDomain(p_loc_histID, intervals: p_histogramSlices);
+					HistogramAddObservations(p_loc_histID, p_bestGlobalSolutionDistanceToStation(i_loc));
+					HistogramGetFrequencies(p_loc_histID, p_distanceToStationHistogram(i_slice));
+					HistogramGetBounds(p_loc_histID, p_loc_leftBound(i_slice), p_loc_rightBound(i_slice));
+					HistogramDelete(p_loc_histID);
+					
+					sp_distanceToStationSliceDescription(i_slice) |
+					        p_distanceToStationHistogram(i_slice)
+					:=  FormatString("%s-%s", 
+					            round(p_loc_leftBound(i_slice),2), 
+					            round(p_loc_rightBound(i_slice),2));
+					
+					endblock;
+					
+					block ! NumberOfVehicles Histogram
+					empty p_numberOfVehiclesHistogram, sp_numberOfVehiclesSliceDescription, p_loc_leftBound, p_loc_rightBound;
+					
+					HistogramCreate(p_loc_histID);
+					HistogramSetDomain(p_loc_histID,  intervals: p_histogramSlices);
+					
+					for i_particle | p_bestGlobalSolutionNumberOfVehicles(i_particle) do
+					    HistogramAddObservation(p_loc_histID, p_bestGlobalSolutionNumberOfVehicles(i_particle));
+					endfor;    
+					
+					HistogramGetFrequencies(p_loc_histID, p_numberOfVehiclesHistogram(i_slice));
+					HistogramGetBounds(p_loc_histID, p_loc_leftBound(i_slice), p_loc_rightBound(i_slice));
+					HistogramDelete(p_loc_histID);
+					
+					sp_numberOfVehiclesSliceDescription(i_slice) |
+					        p_numberOfVehiclesHistogram(i_slice)
+					:=  FormatString("%s-%s", 
+					            round(p_loc_leftBound(i_slice),2), 
+					            round(p_loc_rightBound(i_slice),2));
+					
+					endblock;
+				}
+				Parameter p_loc_histID;
+				Parameter p_loc_leftBound {
+					IndexDomain: i_slice;
+				}
+				Parameter p_loc_rightBound {
+					IndexDomain: i_slice;
+				}
 			}
 		}
 	}

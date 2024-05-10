@@ -53,12 +53,6 @@
                 "children": []
               },
               {
-                "name": "Allocation",
-                "type": "pagev2-grid",
-                "slug": "allocation",
-                "children": []
-              },
-              {
                 "name": "Results",
                 "type": "pagev2-grid",
                 "slug": "results",
@@ -155,16 +149,65 @@
       }
     }
   },
+  "layouts/custom_82e6559d-d6f9-4d87-8aa0-a49c08dfc1f7": {
+    "definition": {
+      "literal": {
+        "componentName": "Grid",
+        "props": {
+          "gridTemplateColumns": "0.6fr 1fr",
+          "gridTemplateRows": "0.4fr 1fr",
+          "gridTemplateAreas": "\"area-a area-a\" \"area-b area-c\""
+        },
+        "items": [
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-a",
+              "name": "Area A",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-b",
+              "name": "Area B",
+              "gridAutoFlow": "row"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-c",
+              "name": "Area C",
+              "gridAutoFlow": "column"
+            }
+          }
+        ]
+      }
+    },
+    "displayName": {
+      "literal": "Layout2 Copy"
+    }
+  },
   "layouts/custom_c7d7602f-353b-4e73-ae4c-29e8a431ad35": {
     "definition": {
       "literal": {
         "componentName": "Grid",
         "props": {
           "gridTemplateColumns": "1fr 1fr",
-          "gridTemplateRows": "1fr",
-          "gridTemplateAreas": "\"area-b area-c\""
+          "gridTemplateRows": "1fr 0.5fr",
+          "gridTemplateAreas": "\"area-a area-b\" \"area-c area-c\""
         },
         "items": [
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-a",
+              "name": "Area A",
+              "gridAutoFlow": "row"
+            }
+          },
           {
             "componentName": "WidgetArea",
             "props": {
@@ -237,31 +280,6 @@
       "literal": "Results Page"
     }
   },
-  "pages/allocation": {
-    "aimms.widget.type": {
-      "literal": "pagev2-grid"
-    },
-    "bindings": {
-      "literal": [
-        {
-          "widgetUri": "Fitness Chart",
-          "gridArea": "area-a",
-          "dndId": "area-aFitness Chart0"
-        }
-      ]
-    },
-    "widgets": {
-      "literal": [
-        {
-          "uri": "Fitness Chart",
-          "layoutInfo": {
-            "width": "2",
-            "height": "1"
-          }
-        }
-      ]
-    }
-  },
   "pages/control_panel": {
     "aimms.widget.type": {
       "literal": "pagev2-grid"
@@ -270,33 +288,38 @@
       "literal": [
         {
           "widgetUri": "lbl_problemTitle",
-          "gridArea": "area-b",
-          "dndId": "area-blbl_problemTitle0"
+          "gridArea": "area-a",
+          "dndId": "area-albl_problemTitle2"
         },
         {
           "widgetUri": "Costs",
-          "gridArea": "area-b",
-          "dndId": "area-bCosts1"
+          "gridArea": "area-a",
+          "dndId": "area-aCosts3"
         },
         {
           "widgetUri": "Other Parameters",
-          "gridArea": "area-b",
-          "dndId": "area-bOther Parameters2"
+          "gridArea": "area-a",
+          "dndId": "Unassigned widgetsOther Parameters1"
         },
         {
           "widgetUri": "lbl_algorithmTitle",
-          "gridArea": "area-c",
-          "dndId": "area-clbl_algorithmTitle5"
+          "gridArea": "area-b",
+          "dndId": "area-blbl_algorithmTitle4"
         },
         {
           "widgetUri": "Algorithm Parameters_1",
-          "gridArea": "area-c",
-          "dndId": "area-cAlgorithm Parameters_13"
+          "gridArea": "area-b",
+          "dndId": "area-bAlgorithm Parameters_15"
         },
         {
           "widgetUri": "k-NN Controls",
+          "gridArea": "area-b",
+          "dndId": "area-bk-NN Controls6"
+        },
+        {
+          "widgetUri": "Fitness Chart_1",
           "gridArea": "area-c",
-          "dndId": "area-ck-NN Controls4"
+          "dndId": "area-cFitness Chart_17"
         }
       ]
     },
@@ -365,6 +388,10 @@
             "width": "2",
             "height": "1"
           }
+        },
+        {
+          "uri": "Fitness Chart_1",
+          "layoutInfo": {}
         }
       ]
     }
@@ -444,34 +471,44 @@
     "bindings": {
       "literal": [
         {
-          "widgetUri": "map",
-          "gridArea": "area-a",
-          "dndId": "area-amap0"
-        },
-        {
           "widgetUri": "Chargers Per Station_1",
-          "gridArea": "area-b",
-          "dndId": "area-bChargers Per Station_11"
-        },
-        {
-          "widgetUri": "Happiness",
-          "gridArea": "area-c",
-          "dndId": "area-cHappiness2"
+          "gridArea": "Unassigned widgets",
+          "dndId": "Unassigned widgetsChargers Per Station_10"
         },
         {
           "widgetUri": "EV Allocations",
-          "gridArea": "area-d",
-          "dndId": "area-dEV Allocations3"
+          "gridArea": "area-c",
+          "dndId": "area-cEV Allocations1"
         },
         {
           "widgetUri": "Station Cost Breakdown",
-          "gridArea": "area-d",
-          "dndId": "Unassigned widgetsStation Cost Breakdown"
+          "gridArea": "area-c",
+          "dndId": "area-cStation Cost Breakdown2"
+        },
+        {
+          "widgetUri": "map",
+          "gridArea": "area-b",
+          "dndId": "area-bmap3"
+        },
+        {
+          "widgetUri": "cmb_distanceToStationHistogram",
+          "gridArea": "area-a",
+          "dndId": "area-acmb_distanceToStationHistogram4"
+        },
+        {
+          "widgetUri": "Chargers Per Station_2",
+          "gridArea": "area-a",
+          "dndId": "area-aChargers Per Station_26"
+        },
+        {
+          "widgetUri": "Happiness",
+          "gridArea": "area-a",
+          "dndId": "area-aHappiness5"
         }
       ]
     },
     "layoutId": {
-      "literal": "custom_fa5bd0d7-7e27-4a9d-bb41-8d329fda8c60"
+      "literal": "custom_82e6559d-d6f9-4d87-8aa0-a49c08dfc1f7"
     },
     "widgets": {
       "literal": [
@@ -509,6 +546,17 @@
             "width": "2",
             "height": "1"
           }
+        },
+        {
+          "uri": "cmb_distanceToStationHistogram",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "Chargers Per Station_2",
+          "layoutInfo": {}
         }
       ]
     }
@@ -565,7 +613,7 @@
     "contents": {
       "aimms": {
         "contents": [
-          "p_chargersPerStation_hist"
+          "ui::p_NumberOfVehiclesHistogram"
         ]
       }
     },
@@ -574,6 +622,129 @@
     },
     "title": {
       "literal": "Distribution of Chargers per Station"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/Chargers Per Station_2": {
+    "aimms.widget.type": {
+      "literal": "combinationchart"
+    },
+    "color.index": {
+      "literal": "<IDENTIFIER-SET>"
+    },
+    "contents.__display_order__": {
+      "literal": [
+        "contents.0"
+      ]
+    },
+    "contents.0.chart.type": {
+      "literal": "column"
+    },
+    "contents.0.identifier": {
+      "literal": {
+        "identifier": "ui::p_numberOfVehiclesHistogram",
+        "slice": [
+          {
+            "index": "ui::i_slice",
+            "type": "subset",
+            "value": "ui::i_sliceNumberOfVehicles"
+          }
+        ]
+      }
+    },
+    "contents.numdecimals": {
+      "literal": 0
+    },
+    "contents.partition": {
+      "literal": {
+        "header": [
+          "ui::i_slice"
+        ],
+        "grouped": [],
+        "stacked": [],
+        "aggregated": [
+          "<IDENTIFIER-SET>"
+        ]
+      }
+    },
+    "data.labels.show": {
+      "literal": true
+    },
+    "indices.__display_order__": {
+      "literal": [
+        "indices.0"
+      ]
+    },
+    "legend.show": {
+      "literal": false
+    },
+    "name": {
+      "literal": "Chargers Per Station (1) (1)"
+    },
+    "title": {
+      "literal": "Chargers per Station Histogram"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/cmb_distanceToStationHistogram": {
+    "aimms.widget.type": {
+      "literal": "combinationchart"
+    },
+    "color.index": {
+      "literal": "<IDENTIFIER-SET>"
+    },
+    "contents.__display_order__": {
+      "literal": [
+        "contents.0"
+      ]
+    },
+    "contents.0.identifier": {
+      "literal": {
+        "identifier": "ui::p_distanceToStationHistogram",
+        "slice": [
+          {
+            "index": "ui::i_slice",
+            "type": "subset",
+            "value": "ui::i_sliceDistanceToStation"
+          }
+        ]
+      }
+    },
+    "contents.numdecimals": {
+      "literal": 0
+    },
+    "contents.partition": {
+      "literal": {
+        "header": [
+          "ui::i_slice"
+        ],
+        "grouped": [],
+        "stacked": [],
+        "aggregated": [
+          "<IDENTIFIER-SET>"
+        ]
+      }
+    },
+    "data.labels.show": {
+      "literal": true
+    },
+    "indices.__display_order__": {
+      "literal": [
+        "indices.0"
+      ]
+    },
+    "legend.show": {
+      "literal": false
+    },
+    "name": {
+      "literal": "cmb_distanceToStationHistogram"
+    },
+    "title": {
+      "literal": "Distance to Station Histogram"
     },
     "views": {
       "literal": {}
@@ -675,26 +846,69 @@
       "literal": "EV Allocations"
     },
     "title": {
-      "literal": "EV to Station Allocations"
+      "literal": "EV Overview"
     },
     "views": {
       "literal": {}
     }
   },
-  "widgets/Fitness Chart": {
+  "widgets/Fitness Chart_1": {
     "aimms.widget.type": {
-      "literal": "linechart"
+      "literal": "combinationchart"
     },
-    "contents": {
-      "aimms": {
-        "contents": [
-          "p_generationalFitness",
-          "p_globalBestFitness"
+    "contents.__display_order__": {
+      "literal": [
+        "contents.0",
+        "contents.1"
+      ]
+    },
+    "contents.0.chart.type": {
+      "literal": "line"
+    },
+    "contents.0.identifier": {
+      "literal": {
+        "identifier": "p_generationalFitness",
+        "slice": [
+          {
+            "index": "i_gen",
+            "type": "free",
+            "value": "i_gen"
+          }
         ]
       }
     },
+    "contents.1.chart.type": {
+      "literal": "line"
+    },
+    "contents.1.identifier": {
+      "literal": {
+        "identifier": "p_globalBestFitness",
+        "slice": [
+          {
+            "index": "i_gen",
+            "type": "free",
+            "value": "i_gen"
+          }
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "header": [
+          "i_gen"
+        ],
+        "stacked": [],
+        "grouped": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "legend.show": {
+      "literal": true
+    },
     "name": {
-      "literal": "Fitness Chart"
+      "literal": "cmb_fitnessChart (1)"
     },
     "title": {
       "literal": "Performance"
@@ -829,10 +1043,10 @@
       ]
     },
     "center.latitude": {
-      "literal": 40.873649351264
+      "literal": 40.882194401806395
     },
     "center.longitude": {
-      "literal": -76.7379387321185
+      "literal": -77.84267836403372
     },
     "heatmaps.__display_order__": {
       "literal": [
@@ -1098,7 +1312,7 @@
       "literal": "Station Cost Breakdown"
     },
     "title": {
-      "literal": "Station Data"
+      "literal": "Station Overview"
     },
     "views": {
       "literal": {}
