@@ -303,6 +303,25 @@
     "layoutId": {
       "literal": "custom_c7d7602f-353b-4e73-ae4c-29e8a431ad35"
     },
+    "primarypageaction": {
+      "aimms": {
+        "contents": [
+          "ui::sp_def_controlPanelPrimaryPageAction"
+        ],
+        "slices": [
+          {
+            "identifier": "ui::sp_def_controlPanelPrimaryPageAction",
+            "slice": [
+              {
+                "index": "webui::indexPageActionSpec",
+                "type": "free",
+                "value": "webui::indexPageActionSpec"
+              }
+            ]
+          }
+        ]
+      }
+    },
     "widgets": {
       "literal": [
         {
@@ -891,12 +910,12 @@
     "nodes.1": {
       "aimms": {
         "contents": [
-          "p_bestGlobalSolutionX",
-          "p_bestGlobalSolutionY"
+          "ui::p_bestGlobalSolutionLongitude",
+          "ui::p_bestGlobalSolutionLatitude"
         ],
         "slices": [
           {
-            "identifier": "p_bestGlobalSolutionX",
+            "identifier": "ui::p_bestGlobalSolutionLongitude",
             "slice": [
               {
                 "index": "i_particle",
@@ -906,7 +925,7 @@
             ]
           },
           {
-            "identifier": "p_bestGlobalSolutionY",
+            "identifier": "ui::p_bestGlobalSolutionLatitude",
             "slice": [
               {
                 "index": "i_particle",
@@ -925,7 +944,7 @@
     },
     "nodes.1.latitude": {
       "literal": {
-        "identifier": "p_bestGlobalSolutionY",
+        "identifier": "ui::p_bestGlobalSolutionLatitude",
         "slice": [
           {
             "index": "i_particle",
@@ -937,7 +956,7 @@
     },
     "nodes.1.longitude": {
       "literal": {
-        "identifier": "p_bestGlobalSolutionX",
+        "identifier": "ui::p_bestGlobalSolutionLongitude",
         "slice": [
           {
             "index": "i_particle",
