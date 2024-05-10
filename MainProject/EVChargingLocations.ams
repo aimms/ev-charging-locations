@@ -101,9 +101,6 @@ Model Main_EVChargingLocations {
 				Definition: -74.023697;
 				Comment: "data from Pennsylvania (https://www.latlong.net/)";
 			}
-			Parameter p_def_maxX {
-				Definition: max(i_loc, p_x(i_loc));
-			}
 			Parameter p_def_maxY {
 				Definition: max(i_loc, p_y(i_loc));
 			}
@@ -614,6 +611,8 @@ Model Main_EVChargingLocations {
 				for i_charger in s_chargers do
 					p_chargersPerStation_hist(i_charger) := sum[i_particle | p_bestGlobalSolutionNumberOfVehicles(i_particle) = Val(i_charger), 1 $ p_bestGlobalSolutionNumberOfVehicles(i_particle)];
 				endfor;
+				
+				ui::pr_calculateSolutionPoints;
 			}
 		}
 		Procedure pr_resetPSO {
@@ -702,17 +701,24 @@ Model Main_EVChargingLocations {
 			dex::ReadFromFile("DefaultData.xlsx", "Generated/DefaultData-Excel");
 			
 			empty p_longitude,p_latitude;
+			p_loc_maxX := max(i_loc, p_x(i_loc));
+			p_loc_maxY := max(i_loc, p_Y(i_loc));
+			
 			for i_loc do
 			    ui::pr_xToLongitude(
 			        p_in_x          :  p_x(i_loc), 
+			        p_in_maxX       :  p_loc_maxX,
 			        p_out_longitude :  p_longitude(i_loc));
 			
 			    ui::pr_yToLatitude(
 			        p_in_y          :  p_y(i_loc), 
+			        p_in_maxY       :  p_loc_maxY,
 			        p_out_latitude  :  p_latitude(i_loc));    
 			endfor;
 		}
 		Comment: "Add initialization statements here that do NOT require any library being initialized already.";
+		Parameter p_loc_maxX;
+		Parameter p_loc_maxY;
 	}
 	Procedure PostMainInitialization {
 		Comment: {

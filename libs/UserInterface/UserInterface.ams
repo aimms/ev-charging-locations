@@ -56,9 +56,9 @@ LibraryModule UserInterface {
 			}
 		}
 		Procedure pr_yToLatitude {
-			Arguments: (p_in_y,p_out_latitude);
+			Arguments: (p_in_y,p_in_maxY,p_out_latitude);
 			Body: {
-				p_loc_auxiliar := p_in_y * (p_def_maxLatitude - p_def_minLatitude) /$ p_def_maxY;
+				p_loc_auxiliar := p_in_y * (p_def_maxLatitude - p_def_minLatitude) /$ p_in_maxY;
 				p_out_latitude := p_loc_auxiliar + p_def_minLatitude;
 			}
 			Parameter p_in_y {
@@ -68,16 +68,18 @@ LibraryModule UserInterface {
 				Property: Output;
 			}
 			Parameter p_loc_auxiliar;
+			Parameter p_in_maxY;
 		}
 		Procedure pr_xToLongitude {
-			Arguments: (p_in_x,p_out_longitude);
+			Arguments: (p_in_x,p_in_maxX,p_out_longitude);
 			Body: {
-				p_loc_auxiliar := p_in_x * (p_def_maxLongitude - p_def_minLongitude) /$ p_def_maxX;
+				p_loc_auxiliar := p_in_x * (p_def_maxLongitude - p_def_minLongitude) /$ p_in_maxX;
 				p_out_longitude := p_loc_auxiliar + p_def_minLongitude;
 			}
 			Parameter p_in_x {
 				Property: Input;
 			}
+			Parameter p_in_maxX;
 			Parameter p_out_longitude {
 				Property: Output;
 			}
@@ -114,18 +116,24 @@ LibraryModule UserInterface {
 		Section Results_Page {
 			Procedure pr_calculateSolutionPoints {
 				Body: {
-					empty p_bestGlobalSolutionLatitude ,p_bestGlobalSolutionLongitude;
+					empty p_bestGlobalSolutionLatitude, p_bestGlobalSolutionLongitude;
+					p_loc_maxX := max(i_particle, p_bestGlobalSolutionX(i_particle));
+					p_loc_maxY := max(i_particle, p_bestGlobalSolutionY(i_particle));
 					
 					for i_particle do
 					    ui::pr_xToLongitude(
 					        p_in_x          :  p_bestGlobalSolutionX(i_particle), 
+					        p_in_maxX       :  p_loc_maxX,
 					        p_out_longitude :  p_bestGlobalSolutionLongitude(i_particle));
 					
 					    ui::pr_yToLatitude(
 					        p_in_y          :  p_bestGlobalSolutionY(i_particle), 
+					        p_in_maxY       :  p_loc_maxY,
 					        p_out_latitude  :  p_bestGlobalSolutionLatitude(i_particle));    
 					endfor;
 				}
+				Parameter p_loc_maxX;
+				Parameter p_loc_maxY;
 			}
 			Parameter p_bestGlobalSolutionLongitude {
 				IndexDomain: (i_particle);
