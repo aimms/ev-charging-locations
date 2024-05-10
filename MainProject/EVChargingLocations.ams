@@ -67,17 +67,45 @@ Model Main_EVChargingLocations {
 				Range: s_locations;
 				dex::ColumnName: Location;
 			}
-			Parameter p_longitude {
+			Parameter p_y {
 				IndexDomain: i_loc;
-				dex::ColumnName: Longitude;
+				dex::ColumnName: Y;
+				dex::Dataset: DefaultData;
+				dex::TableName: Locations;
+			}
+			Parameter p_x {
+				IndexDomain: i_loc;
+				dex::ColumnName: X;
 				dex::Dataset: DefaultData;
 				dex::TableName: Locations;
 			}
 			Parameter p_latitude {
 				IndexDomain: i_loc;
-				dex::ColumnName: Latitude;
-				dex::Dataset: DefaultData;
-				dex::TableName: Locations;
+			}
+			Parameter p_longitude {
+				IndexDomain: i_loc;
+			}
+			Parameter p_def_minLatitude {
+				Definition: 39.722422;
+				Comment: "data from Pennsylvania (https://www.latlong.net/)";
+			}
+			Parameter p_def_maxLatitude {
+				Definition: 41.998439;
+				Comment: "data from Pennsylvania (https://www.latlong.net/)";
+			}
+			Parameter p_def_minLongitude {
+				Definition: -80.516914;
+				Comment: "data from Pennsylvania (https://www.latlong.net/)";
+			}
+			Parameter p_def_maxLongitude {
+				Definition: -74.023697;
+				Comment: "data from Pennsylvania (https://www.latlong.net/)";
+			}
+			Parameter p_def_maxX {
+				Definition: max(i_loc, p_x(i_loc));
+			}
+			Parameter p_def_maxY {
+				Definition: max(i_loc, p_y(i_loc));
 			}
 		}
 		DeclarationSection Control_Panel {
@@ -175,9 +203,116 @@ Model Main_EVChargingLocations {
 				Definition: 1 $ (not ep_nClosestLocation(i_loc,i_indv));
 			}
 		}
-		Parameter p_initialParticleLocationsX {
-			IndexDomain: i_particle;
-			Text: "Region in which to spawn each particle for each individual.";
+		DeclarationSection KNN_Auxiliar_Parameters {
+			Parameter p_initialParticleLocationsX {
+				IndexDomain: i_particle;
+				Text: "Region in which to spawn each particle for each individual.";
+			}
+			Parameter p_initialParticleLocationsY {
+				IndexDomain: i_particle;
+				Text: "Region in which to spawn each particle for each individual.";
+			}
+			Parameter p_bestGlobalSolutionX {
+				IndexDomain: (i_particle);
+				Text: "Best global solution X coordinate.";
+			}
+			Parameter p_bestGlobalSolutionY {
+				IndexDomain: (i_particle);
+				Text: "Best global solution Y coordinate.";
+			}
+			Parameter p_currentSolutionX {
+				IndexDomain: (i_indv,i_particle);
+				Text: "X coordinates of the current solution for the individual.";
+			}
+			Parameter p_currentSolutionY {
+				IndexDomain: (i_indv,i_particle);
+				Text: "Y coordinates of the current solution for the individual.";
+			}
+			Parameter p_bestLocalSolutionX {
+				IndexDomain: (i_indv,i_particle);
+				Text: "Best local solution X coordinate.";
+			}
+			Parameter p_bestLocalSolutionY {
+				IndexDomain: (i_indv,i_particle);
+				Text: "Best local solution Y coordinate.";
+			}
+			Parameter p_previousSolutionX {
+				IndexDomain: (i_indv,i_particle);
+				Text: "X coordinates of the previous solution for the individual.";
+			}
+			Parameter p_previousSolutionY {
+				IndexDomain: (i_indv,i_particle);
+				Text: "Y coordinates of the previous solution for the individual.";
+			}
+			Parameter p_currentSolutionVelocityX {
+				IndexDomain: (i_indv,i_particle);
+				Text: "X velocity of the current solution for the individual.";
+			}
+			Parameter p_currentSolutionVelocityY {
+				IndexDomain: (i_indv,i_particle);
+				Text: "Y velocity of the current solution for the individual.";
+			}
+			Parameter p_previousSolutionVelocityX {
+				IndexDomain: (i_indv,i_particle);
+				Text: "X velocity of the previous solution for the individual.";
+			}
+			Parameter p_previousSolutionVelocityY {
+				IndexDomain: (i_indv,i_particle);
+				Text: "Y velocity of the previous solution for the individual.";
+			}
+			Parameter p_bestGlobalSolutionCost {
+				Default: 999999999;
+			}
+			Parameter p_bestGlobalSolutionHappinessScore;
+			Parameter p_bestGlobalSolutionMaintenanceCost {
+				IndexDomain: i_particle;
+			}
+			Parameter p_bestGlobalSolutionConstructionCost {
+				IndexDomain: i_particle;
+			}
+			Parameter p_bestGlobalSolutionDrivingCost {
+				IndexDomain: i_particle;
+			}
+			Parameter p_bestGlobalSolutionChargerCost {
+				IndexDomain: i_particle;
+			}
+			Parameter p_bestGlobalSolutionNumberOfChargers {
+				IndexDomain: i_particle;
+			}
+			Parameter p_bestGlobalSolutionDistanceToStation {
+				IndexDomain: i_loc;
+			}
+			Parameter p_bestLocalSolutionCost {
+				IndexDomain: (i_indv);
+				Default: inf;
+			}
+			Parameter p_totalConstructionCost {
+				IndexDomain: i_indv;
+			}
+			Parameter p_totalMaintenanceCost {
+				IndexDomain: i_indv;
+			}
+			Parameter p_totalDrivingCost {
+				IndexDomain: (i_indv);
+			}
+			Parameter p_totalChargingCost {
+				IndexDomain: (i_indv);
+			}
+			Parameter p_totalPenaltyCost {
+				IndexDomain: i_indv;
+			}
+			Parameter p_totalObjectiveCost {
+				IndexDomain: i_indv;
+			}
+			Parameter p_def_drivingCost {
+				IndexDomain: (i_loc,i_indv);
+				Definition: p_drivingCostPerMile * p_distances(ep_nClosestLocation(i_loc ,i_indv), i_loc, i_indv);
+			}
+			Parameter p_def_chargingCost {
+				IndexDomain: (i_loc,i_indv);
+				Definition: p_chargingCostPerHour;
+				Comment: "This cost could change over time, so a formula can be inserted here.";
+			}
 		}
 		Parameter p_initialParticleLocationsY {
 			IndexDomain: i_particle;
@@ -296,13 +431,15 @@ Model Main_EVChargingLocations {
 		}
 		Procedure pr_initializeProblem {
 			Body: {
+				empty KNN_Auxiliar_Parameters;
+				
 				block ! Spawn Individuals 
 				
 				!@TODO Think if this will work for any latitude/longitude
-				p_loc_xMin := min(i_loc, p_longitude(i_loc));
-				p_loc_yMin := min(i_loc, p_latitude(i_loc));
-				p_loc_xMax := max(i_loc, p_longitude(i_loc));
-				p_loc_yMax := max(i_loc, p_latitude(i_loc));
+				p_loc_xMin := min(i_loc, p_y(i_loc));
+				p_loc_yMin := min(i_loc, p_x(i_loc));
+				p_loc_xMax := max(i_loc, p_y(i_loc));
+				p_loc_yMax := max(i_loc, p_x(i_loc));
 				
 				! Starting locations for the particles
 				p_initialParticleLocationsX(i_particle) := Uniform(p_loc_xMin, p_loc_xMax);
@@ -377,8 +514,8 @@ Model Main_EVChargingLocations {
 					! Calculate the Euclidean distance between each particle and each location
 					p_distances(i_particle,i_loc,i_indv) 
 					:=  sqrt(
-				            (p_currentSolutionX(i_indv,i_particle) - p_longitude(i_loc))^2 
-					        + (p_currentSolutionY(i_indv,i_particle) - p_latitude(i_loc))^2);
+				            (p_currentSolutionX(i_indv,i_particle) - p_y(i_loc))^2 
+					        + (p_currentSolutionY(i_indv,i_particle) - p_x(i_loc))^2);
 				
 				endfor;
 				
@@ -489,10 +626,11 @@ Model Main_EVChargingLocations {
 				    + p_loc_cognitiveY(i_indv,i_particle) 
 				    + p_loc_socialY(i_indv,i_particle);
 				
+				
 				endblock;
 				
 				block ! Apply the position update 
-				p_currentSolutionX(i_indv,i_particle) := p_previousSolutionX(i_indv,i_particle) + p_currentSolutionVelocityX(i_indv,i_particle);
+				p_currentSolutionX(i_indv,i_particle) := p_previousSolutionX(i_indv,i_particle) + p_currentSolutionVelocityX(i_indv,i_particle); !aqui
 				p_currentSolutionY(i_indv,i_particle) := p_previousSolutionY(i_indv,i_particle) + p_currentSolutionVelocityY(i_indv,i_particle);
 				endblock;
 				
@@ -562,6 +700,8 @@ Model Main_EVChargingLocations {
 		}
 		Procedure pr_runPSOAlgorithm {
 			Body: {
+				webui::OpenPage(pageId :  'allocation');
+				
 				pr_initializeProblem;
 				
 				for (i_gen in s_def_generations) do
@@ -658,11 +798,24 @@ Model Main_EVChargingLocations {
 	}
 	Procedure MainInitialization {
 		Body: {
-			!dex::GenerateDatasetMappings;
+			dex::GenerateDatasetMappings;
 			dex::ReadAllMappings;
+			
+			empty p_y, p_x;
 			
 			! Read load data
 			dex::ReadFromFile("DefaultData.xlsx", "Generated/DefaultData-Excel");
+			
+			empty p_longitude,p_latitude;
+			for i_loc do
+			    ui::pr_xToLongitude(
+			        p_in_x          :  p_x(i_loc), 
+			        p_out_longitude :  p_longitude(i_loc));
+			
+			    ui::pr_yToLatitude(
+			        p_in_y          :  p_y(i_loc), 
+			        p_out_latitude  :  p_latitude(i_loc));    
+			endfor;
 		}
 		Comment: "Add initialization statements here that do NOT require any library being initialized already.";
 	}
