@@ -928,6 +928,9 @@
         ]
       }
     },
+    "contents.numdecimals": {
+      "literal": 3
+    },
     "name": {
       "literal": "Happiness"
     },
@@ -1043,10 +1046,10 @@
       ]
     },
     "center.latitude": {
-      "literal": 40.882194401806395
+      "literal": 41.27378307439106
     },
     "center.longitude": {
-      "literal": -77.84267836403372
+      "literal": -77.38220889265367
     },
     "heatmaps.__display_order__": {
       "literal": [
@@ -1210,9 +1213,10 @@
       "aimms": {
         "contents": [
           "p_maxNumberChargersPerStation",
-          "p_chargingProbability",
           "p_maxVehicleRange",
-          "p_meanVehicleRange"
+          "p_meanVehicleRange",
+          "p_evPerLocation",
+          "p_lambda"
         ]
       }
     },

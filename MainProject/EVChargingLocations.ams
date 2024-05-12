@@ -103,9 +103,6 @@ Model Main_EVChargingLocations {
 				Definition: -74.023697;
 				Comment: "data from Pennsylvania (https://www.latlong.net/)";
 			}
-			Parameter p_def_maxY {
-				Definition: max(i_loc, p_y(i_loc));
-			}
 		}
 		DeclarationSection Control_Panel {
 			Parameter p_maintenanceCost {
@@ -126,9 +123,14 @@ Model Main_EVChargingLocations {
 			Parameter p_maxNumberChargersPerStation {
 				InitialData: 8;
 			}
-			Parameter p_meanVehicleRange;
+			Parameter p_meanVehicleRange {
+				InitialData: 100;
+			}
 			Parameter p_maxVehicleRange {
 				InitialData: 250;
+			}
+			Parameter p_minVehicleRange {
+				InitialData: 20;
 			}
 			Parameter p_chargingProbability;
 			Parameter p_numberParticles {
@@ -158,8 +160,21 @@ Model Main_EVChargingLocations {
 			}
 			Parameter p_spawn_region {
 				Text: "Region in which particles each particle is spawned in an individual.";
-				InitialData: 0.09;
+				InitialData: 10;
 				Comment: "Distance from an initial \'spawn\' location within which a particle can be initialized.";
+			}
+			Parameter p_def_nClosest {
+				Range: integer;
+				InitialData: 20;
+			}
+			Parameter p_def_distanceCutoff {
+				InitialData: 50;
+			}
+			Parameter p_evPerLocation {
+				InitialData: 10;
+			}
+			Parameter p_lambda {
+				InitialData: 0.012;
 			}
 		}
 	}
@@ -171,13 +186,6 @@ Model Main_EVChargingLocations {
 				Index: i_n_clos;
 				Definition: ElementRange(1, p_def_nClosest, 1);
 			}
-			Parameter p_def_nClosest {
-				Range: integer;
-				InitialData: 20;
-			}
-			Parameter p_def_distanceCutoff {
-				InitialData: 50;
-			}
 			ElementParameter ep_nClosestLocation {
 				IndexDomain: (i_loc,i_indv);
 				Range: s_def_particles;
@@ -186,23 +194,19 @@ Model Main_EVChargingLocations {
 				IndexDomain: (i_loc,i_indv);
 				Range: s_def_particles;
 			}
+		}
+		DeclarationSection KNN_Auxiliar_Parameters {
 			Parameter p_distances {
 				IndexDomain: (i_particle,i_loc,i_indv);
 			}
+			Parameter bp_def_activeStation {
+				IndexDomain: (i_particle,i_indv);
+				Comment: "1 $ p_allocationCount(i_particle,i_indv)";
+			}
+			Parameter p_is_first_generation;
 			Parameter p_allocationCount {
 				IndexDomain: (i_particle,i_indv);
 			}
-			Parameter bp_def_activeStation {
-				IndexDomain: (i_particle,i_indv);
-				Definition: 1 $ p_allocationCount(i_particle,i_indv);
-			}
-			Parameter bp_def_unallocatedLocations {
-				IndexDomain: (i_loc,i_indv);
-				Range: binary;
-				Definition: 1 $ (not ep_nClosestLocation(i_loc,i_indv));
-			}
-		}
-		DeclarationSection KNN_Auxiliar_Parameters {
 			Parameter p_initialParticleLocationsX {
 				IndexDomain: i_particle;
 				Text: "Region in which to spawn each particle for each individual.";
@@ -258,6 +262,12 @@ Model Main_EVChargingLocations {
 			Parameter p_previousSolutionVelocityY {
 				IndexDomain: (i_indv,i_particle);
 				Text: "Y velocity of the previous solution for the individual.";
+			}
+			Parameter p_demand {
+				IndexDomain: (i_loc,i_indv);
+			}
+			Parameter p_range {
+				IndexDomain: (i_loc,i_indv);
 			}
 			Parameter p_bestGlobalSolutionCost {
 				Default: 999999999;
@@ -322,11 +332,9 @@ Model Main_EVChargingLocations {
 			}
 			Parameter p_def_drivingCost {
 				IndexDomain: (i_loc,i_indv);
-				Definition: p_drivingCostPerMile * p_distances(ep_nClosestLocation(i_loc ,i_indv), i_loc, i_indv);
 			}
 			Parameter p_def_chargingCost {
 				IndexDomain: (i_loc,i_indv);
-				Definition: p_chargingCostPerHour;
 				Comment: "This cost could change over time, so a formula can be inserted here.";
 			}
 		}
@@ -337,14 +345,19 @@ Model Main_EVChargingLocations {
 				block ! Spawn Individuals 
 				
 				!@TODO Think if this will work for any latitude/longitude
-				p_loc_xMin := min(i_loc, p_y(i_loc));
-				p_loc_yMin := min(i_loc, p_x(i_loc));
-				p_loc_xMax := max(i_loc, p_y(i_loc));
-				p_loc_yMax := max(i_loc, p_x(i_loc));
+				p_loc_xMin := min(i_loc, p_x(i_loc));
+				p_loc_yMin := min(i_loc, p_y(i_loc));
+				p_loc_xMax := max(i_loc, p_x(i_loc));
+				p_loc_yMax := max(i_loc, p_y(i_loc));
 				
 				! Starting locations for the particles
-				p_initialParticleLocationsX(i_particle) := Uniform(p_loc_xMin, p_loc_xMax);
-				p_initialParticleLocationsY(i_particle) := Uniform(p_loc_yMin, p_loc_yMax);
+				
+				! Sample p_numberParticles from the EV locations
+				p_loc_ev_samples(i_particle) := FormatString("%n", round(Uniform(0, card(i_loc)), 0));
+				
+				! Use these locations as initial particle locations
+				p_initialParticleLocationsX(i_particle) := p_x(StringToElement(s_locations, p_loc_ev_samples(i_particle)));
+				p_initialParticleLocationsY(i_particle) := p_y(StringToElement(s_locations, p_loc_ev_samples(i_particle)));
 				
 				! Starting locations for the particles in each individual
 				p_currentSolutionX(i_indv, i_particle) 
@@ -404,24 +417,39 @@ Model Main_EVChargingLocations {
 			Parameter p_loc_binomial {
 				IndexDomain: (i_indv,i_particle);
 			}
+			StringParameter p_loc_ev_samples {
+				IndexDomain: (i_particle);
+			}
 		}
-		Procedure pr_KNNSubroutine {
+		Procedure pr_getDistances {
 			Body: {
-				block ! Calculate Distances
-				
 				!@TODO: maybe we can change this to haversine? For a basic model I think this is fine, it depends on the size of the region though. It could be useful to give the user an option.
 				for (i_indv in s_def_individuals) do
 				
 					! Calculate the Euclidean distance between each particle and each location
 					p_distances(i_particle,i_loc,i_indv) 
 					:=  sqrt(
-				            (p_currentSolutionX(i_indv,i_particle) - p_y(i_loc))^2 
-					        + (p_currentSolutionY(i_indv,i_particle) - p_x(i_loc))^2);
+				            (p_currentSolutionX(i_indv,i_particle) - p_x(i_loc))^2 
+					        + (p_currentSolutionY(i_indv,i_particle) - p_y(i_loc))^2);
 				
 				endfor;
+			}
+		}
+		Procedure pr_getRanges {
+			Body: {
+				p_range(i_loc,i_indv) := Normal(p_meanVehicleRange, p_meanVehicleRange/2);
 				
-				endblock;
+				while (min((i_loc,i_indv), p_range(i_loc,i_indv)) < p_minVehicleRange) or (LoopCount = 1000) do
+					 p_range(i_loc,i_indv) $ (p_range(i_loc,i_indv) < p_minVehicleRange) := Normal(p_meanVehicleRange, p_meanVehicleRange/2);
+				endwhile;
 				
+				p_range(i_loc,i_indv) $ (p_range(i_loc,i_indv) < p_minVehicleRange) := p_minVehicleRange;
+			}
+		}
+		Procedure pr_KNNSubroutine {
+			Body: {
+				pr_getDistances;
+				pr_getRanges;
 				pr_getClosest;
 			}
 		}
@@ -430,8 +458,9 @@ Model Main_EVChargingLocations {
 				p_loc_distances(i_particle,i_loc,i_indv) 
 				:=  p_distances(i_particle,i_loc,i_indv) $ (p_distances(i_particle,i_loc,i_indv) < p_def_distanceCutoff);
 				
+				
+				p_demand(i_loc,i_indv) := p_evPerLocation * exp(-(p_lambda^2) * (p_range(i_loc, i_indv) - 20)^2);
 				empty p_allocationCount;
-				empty ep_nClosestLocation;
 				
 				for (i_indv in s_def_individuals) do
 				
@@ -441,20 +470,32 @@ Model Main_EVChargingLocations {
 						p_loc_break := 0;
 				
 						! Find the nearest N locations
-						for i_n_clos in {1 .. p_def_nClosest} do
+						if 	ep_nClosestLocation(i_loc,i_indv)
+							and (sqrt(p_currentSolutionVelocityX(i_indv,ep_nClosestLocation(i_loc,i_indv))^2 + p_currentSolutionVelocityY(i_indv,ep_nClosestLocation(i_loc,i_indv))^2) < 0.25)
+							and (Uniform(0,1) < 0.75) then
 				
-							! Now, if we manage an allocation then stop looking for the next N closest
-							ep_loc_particle(i_loc,i_n_clos,i_indv) := argmin(i_particle | p_loc_distances(i_particle,i_loc,i_indv) and (0.35 * p_allocationCount(i_particle,i_indv) < 2 * p_maxNumberChargersPerStation), p_loc_distances(i_particle,i_loc,i_indv));
-							ep_nClosestLocation(i_loc,i_indv) := ep_loc_particle(i_loc,i_n_clos,i_indv);
-							p_allocationCount(ep_loc_particle(i_loc,i_n_clos,i_indv),i_indv) += 1;
-							p_loc_distances(ep_loc_particle(i_loc,i_n_clos,i_indv),i_loc,i_indv) := 0;
+								p_allocationCount(ep_nClosestLocation(i_loc,i_indv),i_indv) += p_demand(i_loc,i_indv);
 				
-							if ep_loc_particle(i_loc,i_n_clos,i_indv) then
-								p_loc_break := 1;
-								break;
-							endif;
+						else
 				
-						endfor;
+							ep_nClosestLocation(i_loc,i_indv) := '';
+				
+							for i_n_clos in s_def_nClosests do
+				
+								! Now, if we manage an allocation then stop looking for the next N closest
+								ep_nClosestLocation(i_loc,i_indv) := argmin(i_particle | 	p_loc_distances(i_particle,i_loc,i_indv) 
+																								and (p_allocationCount(i_particle,i_indv) + p_demand(i_loc,i_indv) < 2 * p_maxNumberChargersPerStation), 
+																				p_loc_distances(i_particle,i_loc,i_indv));
+				
+								p_allocationCount(ep_nClosestLocation(i_loc,i_indv),i_indv) += p_demand(i_loc,i_indv);
+								p_loc_distances(ep_nClosestLocation(i_loc,i_indv),i_loc,i_indv) := 0;
+				
+								if ep_nClosestLocation(i_loc,i_indv) then
+									p_loc_break := 1;
+									break;
+								endif;
+							endfor;
+						endif;
 					endfor;
 				endfor;
 			}
@@ -472,6 +513,8 @@ Model Main_EVChargingLocations {
 		}
 		Procedure pr_evaluateCost {
 			Body: {
+				bp_def_activeStation(i_particle,i_indv) := 1 $ p_allocationCount(i_particle,i_indv);
+				
 				! Total costs
 				block
 				p_totalConstructionCost(i_indv) 
@@ -481,15 +524,17 @@ Model Main_EVChargingLocations {
 				:=  p_maintenanceCost 
 				    * sum(i_particle, bp_def_activeStation(i_particle, i_indv));
 				
+				p_def_drivingCost(i_loc,i_indv) := p_drivingCostPerMile * p_distances(ep_nClosestLocation(i_loc ,i_indv), i_loc, i_indv);
 				p_totalDrivingCost(i_indv) 
 				:=  sum(i_loc, p_def_drivingCost(i_loc, i_indv));
 				
+				p_def_chargingCost(i_loc,i_indv) := p_chargingCostPerHour * max(0, (p_maxVehicleRange - p_range(i_loc,i_indv)));
 				p_totalChargingCost(i_indv) 
 				:=  sum(i_loc, p_def_chargingCost(i_loc, i_indv));
 				
 				p_totalPenaltyCost(i_indv) 
 				:=  p_noAllocationPenalty 
-				    * sum(i_loc, bp_def_unallocatedLocations(i_loc, i_indv));
+				    * (card(i_loc) - sum(i_loc | ep_nClosestLocation(i_loc,i_indv), 1));
 				
 				p_totalObjectiveCost(i_indv) 
 				:= 	p_totalDrivingCost(i_indv)
@@ -549,7 +594,7 @@ Model Main_EVChargingLocations {
 					p_bestGlobalSolutionY(i_particle) := p_currentSolutionY(ep_loc_globalBest,i_particle);
 				
 					! Store the global best KPIs
-					p_bestGlobalSolutionHappinessScore := 1 - sum(i_loc, bp_def_unallocatedLocations(i_loc,ep_loc_globalBest)) /$ card(i_loc);
+					p_bestGlobalSolutionHappinessScore := card(p_bestGlobalAllocation) /$ card(i_loc);
 					p_bestGlobalSolutionMaintenanceCost(i_particle) := p_maintenanceCost * bp_def_activeStation(i_particle, ep_loc_globalBest);
 					p_bestGlobalSolutionConstructionCost(i_particle) := p_constructionCost * bp_def_activeStation(i_particle, ep_loc_globalBest);
 					p_bestGlobalSolutionDrivingCost(i_particle) := sum(i_loc | p_bestGlobalAllocation(i_loc) = i_particle, p_def_drivingCost(i_loc, ep_loc_globalBest));
@@ -603,6 +648,8 @@ Model Main_EVChargingLocations {
 			Body: {
 				pr_initializeProblem;
 				
+				p_is_first_generation := 1;
+				
 				for (i_gen in s_def_generations) do
 				
 					pr_KNNSubroutine;
@@ -611,6 +658,8 @@ Model Main_EVChargingLocations {
 				
 					p_generationalFitness(i_gen) := mean(i_indv, p_totalObjectiveCost(i_indv));
 					p_globalBestFitness(i_gen) := p_bestGlobalSolutionCost;
+				
+					p_is_first_generation := 0;
 				
 				endfor;
 				
@@ -641,34 +690,37 @@ Model Main_EVChargingLocations {
 		}
 		DeclarationSection MIP_Declaration {
 			Parameter Distances_domain {
-				IndexDomain: (i_particle,i_loc,i_indv);
+				IndexDomain: (i_particle,i_loc,i_indv) | 0;
 				Definition: p_distances(i_particle,i_loc,i_indv) <= 30;
 			}
 			Variable Vehicle_to_Station {
-				IndexDomain: (i_particle,i_loc,i_indv);
+				IndexDomain: (i_particle,i_loc,i_indv) | 0;
 				Range: binary;
 			}
 			Variable Max_Vehicles_Violation {
-				IndexDomain: (i_loc,i_indv);
+				IndexDomain: (i_loc,i_indv) | 0;
 				Range: nonnegative;
 			}
 			Constraint Assign_Vehicle_to_Station {
-				IndexDomain: (i_particle,i_indv) | exists[i_loc, Distances_domain(i_particle,i_loc,i_indv)];
+				IndexDomain: (i_particle,i_indv) | exists[i_loc, Distances_domain(i_particle,i_loc,i_indv)] and 0;
 				Definition: sum[ i_loc, Vehicle_to_Station(i_particle,i_loc,i_indv)] = 1;
 			}
 			Constraint Restrict_Max_Vehicles {
-				IndexDomain: (i_loc,i_indv);
+				IndexDomain: (i_loc,i_indv) | 0;
 				Definition: sum[ i_particle, Vehicle_to_Station(i_particle,i_loc,i_indv)] <= 16 + Max_Vehicles_Violation(i_loc,i_indv);
 			}
 			Variable TotalDistance {
+				IndexDomain: | 0;
 				Range: free;
 				Definition: sum[ (i_particle,i_loc,i_indv) | Distances_domain(i_particle,i_loc,i_indv), Vehicle_to_Station(i_particle,i_loc,i_indv) * p_distances(i_particle,i_loc,i_indv)];
 			}
 			Variable TotalPenalty {
+				IndexDomain: | 0;
 				Range: free;
 				Definition: sum[ (i_loc,i_indv), Max_Vehicles_Violation(i_loc,i_indv)] * 1000;
 			}
 			Variable TotalCost {
+				IndexDomain: | 0;
 				Range: free;
 				Definition: {
 					TotalDistance
