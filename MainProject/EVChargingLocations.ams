@@ -55,6 +55,7 @@ Model Main_EVChargingLocations {
 			Set s_locations {
 				Text: "Set of locations.";
 				Index: i_loc1;
+				OrderBy: sum(i_indv, p_demand(i_loc1,i_indv));
 				webui::AnnotationsIdentifier: ui::sp_def_evNodeColor(i_loc);
 			}
 			Set s_chargers {
@@ -280,6 +281,8 @@ Model Main_EVChargingLocations {
 			Parameter p_bestGlobalSolutionHappinessScore {
 				webui::FlagsIdentifier: ui::sp_def_readOnly;
 			}
+			Parameter p_bestGlobalSolutionNumberOfStations;
+			Parameter p_bestGlobalSolutionTotalChargers;
 			Parameter p_bestGlobalSolutionMaintenanceCost {
 				IndexDomain: i_particle;
 			}
@@ -600,12 +603,14 @@ Model Main_EVChargingLocations {
 					p_bestGlobalSolutionDrivingCost(i_particle) := sum(i_loc | p_bestGlobalAllocation(i_loc) = i_particle, p_def_drivingCost(i_loc, ep_loc_globalBest));
 					p_bestGlobalSolutionChargerCost(i_particle) := sum(i_loc | p_bestGlobalAllocation(i_loc) = i_particle, p_def_chargingCost(i_loc, ep_loc_globalBest));
 					p_bestGlobalSolutionNumberOfVehicles(i_particle) := p_allocationCount(i_particle, ep_loc_globalBest);
+					p_bestGlobalSolutionNumberOfChargers(i_particle) := ceil(p_allocationCount(i_particle, ep_loc_globalBest)/2);
 					p_bestGlobalSolutionTotalCost(i_particle) := p_bestGlobalSolutionMaintenanceCost(i_particle)
 																	+ p_bestGlobalSolutionConstructionCost(i_particle)
 																	+ p_bestGlobalSolutionDrivingCost(i_particle)
 																	+ p_bestGlobalSolutionChargerCost(i_particle);
 				
 					p_bestGlobalSolutionDistanceToStation(i_loc) := p_distances(ep_nClosestLocation(i_loc,ep_loc_globalBest), i_loc, ep_loc_globalBest);
+					p_bestGlobalSolutionNumberOfStations := card(p_bestGlobalSolutionNumberOfVehicles);
 				
 				endif;
 				endblock;

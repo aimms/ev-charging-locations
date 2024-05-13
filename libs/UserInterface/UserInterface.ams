@@ -169,16 +169,16 @@ LibraryModule UserInterface {
 					p_loc_maxX := max(i_particle, p_bestGlobalSolutionX(i_particle));
 					p_loc_maxY := max(i_particle, p_bestGlobalSolutionY(i_particle));
 					
-					for (i_particle) do ! | p_bestGlobalSolutionNumberOfVehicles(i_particle)
+					for (i_particle) | p_bestGlobalSolutionNumberOfVehicles(i_particle) do
 					    ui::pr_xToLongitude(
-					        p_in_x          :  p_bestGlobalSolutionX(i_particle), 
+					        p_in_x          :  p_bestGlobalSolutionX(i_particle),
 					        p_in_maxX       :  p_loc_maxX,
 					        p_out_longitude :  p_bestGlobalSolutionLongitude(i_particle));
 					
 					    ui::pr_yToLatitude(
-					        p_in_y          :  p_bestGlobalSolutionY(i_particle), 
+					        p_in_y          :  p_bestGlobalSolutionY(i_particle),
 					        p_in_maxY       :  p_loc_maxY,
-					        p_out_latitude  :  p_bestGlobalSolutionLatitude(i_particle));    
+					        p_out_latitude  :  p_bestGlobalSolutionLatitude(i_particle));
 					endfor;
 				}
 				Parameter p_loc_maxX;

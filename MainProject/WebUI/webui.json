@@ -154,9 +154,9 @@
       "literal": {
         "componentName": "Grid",
         "props": {
-          "gridTemplateColumns": "0.6fr 1fr",
-          "gridTemplateRows": "0.4fr 1fr",
-          "gridTemplateAreas": "\"area-a area-a\" \"area-b area-c\""
+          "gridTemplateColumns": "0.6fr 1fr 0.2fr",
+          "gridTemplateRows": "0.5fr 1fr",
+          "gridTemplateAreas": "\"area-a area-a area-d\" \"area-b area-c area-c\""
         },
         "items": [
           {
@@ -181,6 +181,14 @@
               "gridArea": "area-c",
               "name": "Area C",
               "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-d",
+              "name": "Area D",
+              "gridAutoFlow": "row"
             }
           }
         ]
@@ -443,19 +451,31 @@
     "bindings": {
       "literal": [
         {
+          "widgetUri": "img_homeLogo_1",
+          "gridArea": "area-d",
+          "dndId": "Unassigned widgetsimg_homeLogo_11"
+        },
+        {
           "widgetUri": "txt_problemDescription",
           "gridArea": "area-a",
-          "dndId": "Unassigned widgetstxt_problemDescription"
+          "dndId": "area-atxt_problemDescription0"
         }
       ]
     },
     "layoutId": {
-      "literal": "Layout11"
+      "literal": "Layout10"
     },
     "widgets": {
       "literal": [
         {
           "uri": "txt_problemDescription",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "img_homeLogo_1",
           "layoutInfo": {
             "width": "2",
             "height": "1"
@@ -473,27 +493,27 @@
         {
           "widgetUri": "Chargers Per Station_1",
           "gridArea": "Unassigned widgets",
-          "dndId": "Unassigned widgetsChargers Per Station_10"
+          "dndId": "Unassigned widgetsChargers Per Station_11"
         },
         {
           "widgetUri": "EV Allocations",
           "gridArea": "area-c",
-          "dndId": "area-cEV Allocations1"
+          "dndId": "area-cEV Allocations2"
         },
         {
           "widgetUri": "Station Cost Breakdown",
           "gridArea": "area-c",
-          "dndId": "area-cStation Cost Breakdown2"
+          "dndId": "area-cStation Cost Breakdown3"
         },
         {
           "widgetUri": "map",
           "gridArea": "area-b",
-          "dndId": "area-bmap3"
+          "dndId": "area-bmap4"
         },
         {
           "widgetUri": "cmb_distanceToStationHistogram",
           "gridArea": "area-a",
-          "dndId": "area-acmb_distanceToStationHistogram4"
+          "dndId": "area-acmb_distanceToStationHistogram5"
         },
         {
           "widgetUri": "Chargers Per Station_2",
@@ -502,8 +522,13 @@
         },
         {
           "widgetUri": "Happiness",
-          "gridArea": "area-a",
-          "dndId": "area-aHappiness5"
+          "gridArea": "area-d",
+          "dndId": "area-dHappiness0"
+        },
+        {
+          "widgetUri": "Number of Stations",
+          "gridArea": "area-d",
+          "dndId": "Unassigned widgetsNumber of Stations"
         }
       ]
     },
@@ -557,6 +582,13 @@
         {
           "uri": "Chargers Per Station_2",
           "layoutInfo": {}
+        },
+        {
+          "uri": "Number of Stations",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
         }
       ]
     }
@@ -684,7 +716,7 @@
       "literal": "Chargers Per Station (1) (1)"
     },
     "title": {
-      "literal": "Chargers per Station Histogram"
+      "literal": "EVs Serviced per Station Histogram"
     },
     "views": {
       "literal": {}
@@ -810,7 +842,9 @@
         "contents": [
           "p_bestGlobalAllocation",
           "p_bestGlobalSolutionDistanceToStation"
-        ]
+        ],
+        "prefix": "aimms",
+        "slices": []
       }
     },
     "contents.partition": {
@@ -904,6 +938,11 @@
         "aggregated": []
       }
     },
+    "indices.__display_order__": {
+      "literal": [
+        "indices.0"
+      ]
+    },
     "legend.show": {
       "literal": true
     },
@@ -915,6 +954,18 @@
     },
     "views": {
       "literal": {}
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0",
+        "views.1"
+      ]
+    },
+    "views.0.type": {
+      "literal": "template"
+    },
+    "views.1.type": {
+      "literal": "view"
     }
   },
   "widgets/Happiness": {
@@ -929,7 +980,7 @@
       }
     },
     "contents.numdecimals": {
-      "literal": 3
+      "literal": 2
     },
     "name": {
       "literal": "Happiness"
@@ -948,9 +999,6 @@
     },
     "views.0.type": {
       "literal": "view"
-    },
-    "views.1.type": {
-      "literal": "template"
     }
   },
   "widgets/img_homeLogo": {
@@ -966,6 +1014,21 @@
     },
     "name": {
       "literal": "img_homeLogo"
+    }
+  },
+  "widgets/img_homeLogo_1": {
+    "aimms.widget.type": {
+      "literal": "image"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "ui::sp_def_logo"
+        ]
+      }
+    },
+    "name": {
+      "literal": "img_homeLogo (1)"
     }
   },
   "widgets/k-NN Controls": {
@@ -1046,10 +1109,10 @@
       ]
     },
     "center.latitude": {
-      "literal": 41.27378307439106
+      "literal": 41.025499378313754
     },
     "center.longitude": {
-      "literal": -77.38220889265367
+      "literal": -77.22561196103605
     },
     "heatmaps.__display_order__": {
       "literal": [
@@ -1202,7 +1265,31 @@
       "literal": "template"
     },
     "zoom": {
-      "literal": 7
+      "literal": 8
+    }
+  },
+  "widgets/Number of Stations": {
+    "aimms.widget.type": {
+      "literal": "scalar"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "p_bestGlobalSolutionNumberOfStations"
+        ]
+      }
+    },
+    "contents.numdecimals": {
+      "literal": 0
+    },
+    "name": {
+      "literal": "Number of Stations"
+    },
+    "title": {
+      "literal": "Total Stations"
+    },
+    "views": {
+      "literal": {}
     }
   },
   "widgets/Other Parameters": {
@@ -1253,7 +1340,8 @@
         "contents": [
           "p_bestGlobalSolutionDrivingCost",
           "p_bestGlobalSolutionChargerCost",
-          "p_bestGlobalSolutionNumberOfVehicles"
+          "p_bestGlobalSolutionNumberOfVehicles",
+          "p_bestGlobalSolutionNumberOfChargers"
         ]
       }
     },
@@ -1327,7 +1415,7 @@
       "literal": "text"
     },
     "contents": {
-      "literal": "<div><br></div>"
+      "literal": "<div><span style=\"font-size: 18px;\"><b>Introduction</b></span></div><div>In recent years, the popularity of electric vehicles (hereafter <i>EVs</i>) in the United States has increased dramatically. Although EVs still make up only a small portion of roadworthy vehicles in the US, the number of EVs sold per year has been growing strongly. Many EV owners conduct charging on their properties, but the availability of publicly accessible chargers is known to support the continued growth of the EV market, helping to alleviate a phenomenon known as<i> range anxiety</i>, whereby EV owners are overly-cautious of running out of power before reaching the next charging point. Constructing EV charging stations (hereafter <i>stations</i>) is a capital-intensive activity, thus it is important that each station is positioned effectively to reduce fixed and variable costs.&nbsp;</div><div><br></div><div>This application houses the Vulture algorithm, a Particle Swarm Optimization (hereafter <i>PSO</i>) based method to solve non-convex and non-linear problems in a continuous space. In particular, the method addresses the challenge of positioning <i>and&nbsp;</i>sizing EV charging stations within a local region, and furthermore to contribute to the widespread electrification of transportation. This report examines the positioning and sizing a (near) optimal number of EVs in a region, such that charging is convenient for drivers and the cost of the infrastructure is minimized.</div><div><br></div><div><span style=\"font-size: 18px;\"><b>Problem Definition</b></span></div><div>In this section we define the problem solved with the proposed algorithm. However, it must be noted that the assumptions presented below are only meant to showcase the ability of the algorithm to obtain near-optimal solutions with a wide range of constraints and objectives. If necessary, it can also accommodate new objectives and constraints.</div><div><br></div><div><b>Objective</b></div><div>Each charging station has a construction cost and maintenance cost. EVs incur a driving cost when traveling to and from a station, as well as a charging cost for each unit of charge that is consumed. Penalty costs are added for EVs that fall out-of-range from their nearest charger. The objective is to position and size the number of charging stations within the given continuous search space at the lowest cost.</div><div><br></div><div><b>Constraints</b></div><div>Several constraints must be applied to ensure that a practical solution can be found. There is an upper limit s_max on the number of stations that may be constructed. Each station may contain a maximum of eight chargers. No more than one vehicle may wait for a charger at any given time and vehicles may not exceed their range to reach a station. The demand for chargers is governed by the probability of an EV visiting a station. The demand for chargers in a region can be estimated by taking the expected value of the probability of visiting a station multiplied by the number of vehicles in that region.</div>"
     },
     "name": {
       "literal": "txt_problemDescription"
