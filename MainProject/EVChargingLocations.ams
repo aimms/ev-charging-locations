@@ -145,7 +145,7 @@ Model Main_EVChargingLocations {
 			Parameter p_populationSize {
 				Text: "Number of individuals in the population.";
 				Range: integer;
-				InitialData: 50;
+				InitialData: 5;
 			}
 			Parameter p_inertiaComponent {
 				InitialData: 0.83;
@@ -429,11 +429,10 @@ Model Main_EVChargingLocations {
 				!@TODO: maybe we can change this to haversine? For a basic model I think this is fine, it depends on the size of the region though. It could be useful to give the user an option.
 				for (i_indv in s_def_individuals) do
 				
-					! Calculate the Euclidean distance between each particle and each location
+					! Calculate the Euclidean distance^2 between each particle and each location
 					p_distances(i_particle,i_loc,i_indv) 
-					:=  sqrt(
-				            (p_currentSolutionX(i_indv,i_particle) - p_x(i_loc))^2 
-					        + (p_currentSolutionY(i_indv,i_particle) - p_y(i_loc))^2);
+					:=  (p_currentSolutionX(i_indv,i_particle) - p_x(i_loc))^2 
+					        + (p_currentSolutionY(i_indv,i_particle) - p_y(i_loc))^2;
 				
 				endfor;
 			}
@@ -459,7 +458,7 @@ Model Main_EVChargingLocations {
 		Procedure pr_getClosest {
 			Body: {
 				p_loc_distances(i_particle,i_loc,i_indv) 
-				:=  p_distances(i_particle,i_loc,i_indv) $ (p_distances(i_particle,i_loc,i_indv) < p_def_distanceCutoff);
+				:=  p_distances(i_particle,i_loc,i_indv) $ (p_distances(i_particle,i_loc,i_indv) < p_def_distanceCutoff^2);
 				
 				
 				p_demand(i_loc,i_indv) := p_evPerLocation * exp(-(p_lambda^2) * (p_range(i_loc, i_indv) - 20)^2);
@@ -474,7 +473,7 @@ Model Main_EVChargingLocations {
 				
 						! Find the nearest N locations
 						if 	ep_nClosestLocation(i_loc,i_indv)
-							and (sqrt(p_currentSolutionVelocityX(i_indv,ep_nClosestLocation(i_loc,i_indv))^2 + p_currentSolutionVelocityY(i_indv,ep_nClosestLocation(i_loc,i_indv))^2) < 0.25)
+							and (p_currentSolutionVelocityX(i_indv,ep_nClosestLocation(i_loc,i_indv))^2 + p_currentSolutionVelocityY(i_indv,ep_nClosestLocation(i_loc,i_indv))^2 < 0.0625) ! 0.0625 comes from 0.25^2, where 0.25 should the the throttled max velocity
 							and (Uniform(0,1) < 0.75) then
 				
 								p_allocationCount(ep_nClosestLocation(i_loc,i_indv),i_indv) += p_demand(i_loc,i_indv);
@@ -649,8 +648,16 @@ Model Main_EVChargingLocations {
 				Range: s_def_individuals;
 			}
 		}
+		Procedure pr_updateDistancesForOutput {
+			Body: {
+				p_distances(i_particle,i_loc,i_indv) := sqrt(p_distances(i_particle,i_loc,i_indv));
+				p_bestGlobalSolutionDistanceToStation(i_loc) := sqrt(p_bestGlobalSolutionDistanceToStation(i_loc));
+			}
+		}
 		Procedure pr_runPSOAlgorithm {
 			Body: {
+				pr_resetPSO;
+				
 				pr_initializeProblem;
 				
 				p_is_first_generation := 1;
@@ -667,6 +674,8 @@ Model Main_EVChargingLocations {
 					p_is_first_generation := 0;
 				
 				endfor;
+				
+				pr_updateDistancesForOutput;
 				
 				ui::pr_calculateHistograms;
 				ui::pr_calculateSolutionPoints;
