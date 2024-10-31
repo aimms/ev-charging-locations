@@ -136,6 +136,7 @@ LibraryModule UserInterface {
 			}
 			StringParameter sp_distanceToStationSliceDescription {
 				IndexDomain: i_slice;
+				InitialData: "";
 			}
 			Parameter p_numberOfVehiclesHistogram {
 				IndexDomain: i_slice;
@@ -143,6 +144,7 @@ LibraryModule UserInterface {
 			}
 			StringParameter sp_numberOfVehiclesSliceDescription {
 				IndexDomain: i_slice;
+				InitialData: "";
 			}
 			Parameter p_bestGlobalSolutionLongitude {
 				IndexDomain: (i_particle);

@@ -3,6 +3,6 @@
 	<MainProject Path="MainProject" />
 	<Library System="true" Path="AimmsPro" />
 	<RepositoryLibrary UUID="BDF54E1C-AF05-4D77-856C-F3C05F20FFB8" Name="AimmsDEX" Version="24.5.1.1" />
-	<RepositoryLibrary UUID="69378F70-E906-486F-8F2C-1D606AEB9669" Name="WebUI" Version="24.12.3.3" />
+	<RepositoryLibrary UUID="69378F70-E906-486F-8F2C-1D606AEB9669" Name="WebUI" Version="24.12.4.2" />
 	<Library Path="libs\UserInterface" />
 </References>

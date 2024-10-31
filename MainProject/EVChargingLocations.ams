@@ -281,7 +281,9 @@ Model Main_EVChargingLocations {
 			Parameter p_bestGlobalSolutionHappinessScore {
 				webui::FlagsIdentifier: ui::sp_def_readOnly;
 			}
-			Parameter p_bestGlobalSolutionNumberOfStations;
+			Parameter p_bestGlobalSolutionNumberOfStations {
+				webui::FlagsIdentifier: ui::sp_def_readOnly;
+			}
 			Parameter p_bestGlobalSolutionTotalChargers;
 			Parameter p_bestGlobalSolutionMaintenanceCost {
 				IndexDomain: i_particle;
@@ -306,6 +308,7 @@ Model Main_EVChargingLocations {
 			}
 			Parameter p_bestGlobalSolutionNumberOfChargers {
 				IndexDomain: i_particle;
+				webui::FlagsIdentifier: ui::sp_def_readOnly;
 			}
 			Parameter p_bestGlobalSolutionDistanceToStation {
 				IndexDomain: i_loc;
