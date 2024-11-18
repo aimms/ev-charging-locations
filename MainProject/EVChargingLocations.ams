@@ -661,17 +661,27 @@ Model Main_EVChargingLocations {
 			Body: {
 				pr_resetPSO;
 				
+				!Initialize the problem
 				pr_initializeProblem;
 				
 				p_is_first_generation := 1;
 				
 				for (i_gen in s_def_generations) do
 				
-					pr_KNNSubroutine;
+				    !Call the subroutine responsible for assignments 
+					pr_KNNSubroutine; !This runs pr_getDistances, gets the ranges, and runs pr_getClosest
+				
+					!Evaluate the cost of the current solution
 					pr_evaluateCost;
+				
+					!Update the variations for the next generation  
 					pr_updateVariations;
 				
+				    !Store the fitness for the current generation by taking the mean of the 
+				    !total objective cost for all individuals in the generation  
 					p_generationalFitness(i_gen) := mean(i_indv, p_totalObjectiveCost(i_indv));
+				
+					!Update the global best fitness with the best global solution cost
 					p_globalBestFitness(i_gen) := p_bestGlobalSolutionCost;
 				
 					p_is_first_generation := 0;
@@ -695,67 +705,6 @@ Model Main_EVChargingLocations {
 			}
 			Parameter p_globalBestFitness {
 				IndexDomain: i_gen;
-			}
-		}
-	}
-	Section MIP_Model {
-		Comment: "Section to record and wrangle different results for display on the UI.";
-		Procedure Solve_MIP {
-			Body: {
-				solve MIP_Assignment;
-			}
-		}
-		DeclarationSection MIP_Declaration {
-			Parameter Distances_domain {
-				IndexDomain: (i_particle,i_loc,i_indv) | 0;
-				Definition: p_distances(i_particle,i_loc,i_indv) <= 30;
-			}
-			Variable Vehicle_to_Station {
-				IndexDomain: (i_particle,i_loc,i_indv) | 0;
-				Range: binary;
-			}
-			Variable Max_Vehicles_Violation {
-				IndexDomain: (i_loc,i_indv) | 0;
-				Range: nonnegative;
-			}
-			Constraint Assign_Vehicle_to_Station {
-				IndexDomain: (i_particle,i_indv) | exists[i_loc, Distances_domain(i_particle,i_loc,i_indv)] and 0;
-				Definition: sum[ i_loc, Vehicle_to_Station(i_particle,i_loc,i_indv)] = 1;
-			}
-			Constraint Restrict_Max_Vehicles {
-				IndexDomain: (i_loc,i_indv) | 0;
-				Definition: sum[ i_particle, Vehicle_to_Station(i_particle,i_loc,i_indv)] <= 16 + Max_Vehicles_Violation(i_loc,i_indv);
-			}
-			Variable TotalDistance {
-				IndexDomain: | 0;
-				Range: free;
-				Definition: sum[ (i_particle,i_loc,i_indv) | Distances_domain(i_particle,i_loc,i_indv), Vehicle_to_Station(i_particle,i_loc,i_indv) * p_distances(i_particle,i_loc,i_indv)];
-			}
-			Variable TotalPenalty {
-				IndexDomain: | 0;
-				Range: free;
-				Definition: sum[ (i_loc,i_indv), Max_Vehicles_Violation(i_loc,i_indv)] * 1000;
-			}
-			Variable TotalCost {
-				IndexDomain: | 0;
-				Range: free;
-				Definition: {
-					TotalDistance
-					+ TotalPenalty
-				}
-			}
-			MathematicalProgram MIP_Assignment {
-				Objective: TotalCost;
-				Direction: minimize;
-				Constraints: AllConstraints;
-				Variables: AllVariables;
-				Type: Automatic;
-			}
-		}
-		DeclarationSection MIP_Assignments {
-			Parameter Vehicle_to_Station_Distances {
-				IndexDomain: (i_particle,i_loc,i_indv);
-				Definition: Vehicle_to_Station(i_particle,i_loc,i_indv) * p_distances(i_particle,i_loc,i_indv);
 			}
 		}
 	}

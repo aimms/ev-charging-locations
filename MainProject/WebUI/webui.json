@@ -1025,17 +1025,6 @@
       "literal": "img_homeLogo"
     }
   },
-  "widgets/txt_welcome": {
-    "aimms.widget.type": {
-      "literal": "text"
-    },
-    "contents": {
-      "literal": "<div><b style=\"background-color: inherit; font-size: 32px;\">Welcome!</b></div><div><br></div><div><span style=\"background-color: inherit; font-size: 18px;\">You are in an AIMMS Example. Feel free to play around and create something more in this app!</span></div><div><span style=\"background-color: inherit; font-size: 18px;\">&nbsp;</span></div><div><span style=\"background-color: inherit; font-size: 18px;\">If you do, please fork this repository and commit your changes.&nbsp;This ensures our GitHub stays up-to-date for the entire community!</span></div><div><br></div><div><span style=\"background-color: inherit; font-size: 18px;\">You can also check our other interactive resources:</span></div><div><br></div><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span><span style=\"background-color: inherit; font-size: 18px;\">In the online&nbsp;</span><a href=\"https://community.aimms.com/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: inherit; font-size: 18px;\">Community</a><span style=\"background-color: inherit; font-size: 18px;\">, talk to other developers and AIMMSians about the product, modeling, use cases, and more.</span></li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span><span style=\"background-color: inherit; font-size: 18px;\">In the&nbsp;</span><a href=\"https://academy.aimms.com/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: inherit; font-size: 18px;\">Academy</a><span style=\"background-color: inherit; font-size: 18px;\">, learn new skills and challenge yourself. We are busy creating new courses, so keep an eye out!</span></li></ol><div><br></div><div><span style=\"background-color: inherit; font-size: 18px;\">For questions that can't be posted on the community, contact us at&nbsp;</span><i style=\"background-color: rgb(255, 255, 204); font-size: 18px;\">support@aimms.com</i><span style=\"background-color: inherit; font-size: 18px;\">.</span></div><div><br></div><div><br></div><div><br></div>"
-    },
-    "name": {
-      "literal": "txt_welcome"
-    }
-  },
   "widgets/k-NN Controls": {
     "aimms.widget.type": {
       "literal": "scalar"
@@ -1114,10 +1103,10 @@
       ]
     },
     "center.latitude": {
-      "literal": 40.18726672309203
+      "literal": 39.97495036741212
     },
     "center.longitude": {
-      "literal": -75.02602587740262
+      "literal": -74.68505859375001
     },
     "heatmaps.__display_order__": {
       "literal": [
@@ -1424,6 +1413,17 @@
     },
     "name": {
       "literal": "txt_problemDescription"
+    }
+  },
+  "widgets/txt_welcome": {
+    "aimms.widget.type": {
+      "literal": "text"
+    },
+    "contents": {
+      "literal": "<div><b style=\"background-color: inherit; font-size: 32px;\">Welcome!</b></div><div><br></div><div><span style=\"background-color: inherit; font-size: 18px;\">You are in an AIMMS Example. Feel free to play around and create something more in this app!</span></div><div><span style=\"background-color: inherit; font-size: 18px;\">&nbsp;</span></div><div><span style=\"background-color: inherit; font-size: 18px;\">If you do, please fork this repository and commit your changes.&nbsp;This ensures our GitHub stays up-to-date for the entire community!</span></div><div><br></div><div><span style=\"background-color: inherit; font-size: 18px;\">You can also check our other interactive resources:</span></div><div><br></div><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span><span style=\"background-color: inherit; font-size: 18px;\">In the online&nbsp;</span><a href=\"https://community.aimms.com/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: inherit; font-size: 18px;\">Community</a><span style=\"background-color: inherit; font-size: 18px;\">, talk to other developers and AIMMSians about the product, modeling, use cases, and more.</span></li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span><span style=\"background-color: inherit; font-size: 18px;\">In the&nbsp;</span><a href=\"https://academy.aimms.com/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: inherit; font-size: 18px;\">Academy</a><span style=\"background-color: inherit; font-size: 18px;\">, learn new skills and challenge yourself. We are busy creating new courses, so keep an eye out!</span></li></ol><div><br></div><div><span style=\"background-color: inherit; font-size: 18px;\">For questions that can't be posted on the community, contact us at&nbsp;</span><i style=\"background-color: rgb(255, 255, 204); font-size: 18px;\">support@aimms.com</i><span style=\"background-color: inherit; font-size: 18px;\">.</span></div><div><br></div><div><br></div><div><br></div>"
+    },
+    "name": {
+      "literal": "txt_welcome"
     }
   }
 }
