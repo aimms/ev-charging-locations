@@ -1,20 +1,49 @@
-# ev-charging-locations
+# EV Charging Location
 
-![WebUI](https://img.shields.io/badge/UI-WebUI-success)
+[![Downloads](https://img.shields.io/github/downloads/aimms/ev-charging-locations/total?style=for-the-badge&logo=github&labelColor=000081&color=1847c9)](https://github.com/aimms/ev-charging-locations/releases)
+![AIMMS Version](https://img.shields.io/badge/AIMMS-24.5-white?style=for-the-badge&labelColor=009B00&color=00D400)
+![WebUI Version](https://img.shields.io/badge/WebUI-24.12.4.2-white?style=for-the-badge&labelColor=009B00&color=00D400)
+![WebUI Version](https://img.shields.io/badge/DEX-24.5.1.1-white?style=for-the-badge&labelColor=009B00&color=00D400)
 
-**Mirrored in:** https://github.com/aimms/ev-charging-locations
+This repository contains a functional AIMMS example for optimizing the **placement and sizing of electric vehicle (EV) charging stations**. It demonstrates how to solve a capacitated facility location problem (CFLP) within a geospatial context using metaheuristic optimization.
 
-**How-to:** https://how-to.aimms.com/Articles/655/655-ev-location.html
+## 🎯 Business Problem
 
-## Story
+As EV adoption grows, urban planners face the challenge of building accessible and cost-effective infrastructure. This model helps address:
+- **Minimize Infrastructure Costs:** Balancing construction and maintenance expenses.
+- **Reduce Range Anxiety:** Positioning stations to ensure vehicles can reach them within their battery limits.
+- **Demand Fulfillment:** Matching station capacity (number of chargers) with expected vehicle visit probabilities.
+- **Accessibility:** Maximizing the reach of the charging network in continuous urban spaces.
 
-This example tackles the growing challenge of optimally placing and sizing electric vehicle (EV) 
-charging stations in urban environments. With EV adoption rising, particularly in the United States, 
-the need for accessible and cost-effective charging infrastructure is critical. Many EV owners rely on home charging, but the availability of well-positioned public charging stations supports market growth and alleviates "range anxiety," where drivers worry about running out of power before reaching a charger.
+## 📖 How to Use This Example
 
-The goal is to maximize accessibility and minimize infrastructure costs, taking into account location density, 
-demand patterns, and geographical constraints. To address this, the example uses the Vulture algorithm, a Particle Swarm Optimization (PSO) 
-method adept at solving non-linear, non-convex problems in continuous spaces. By effectively planning charging station deployment, 
-urban planners can enhance EV infrastructure, helping cities advance toward sustainability goals and facilitating the broader shift to cleaner transportation.
+To get the most out of this model, we highly recommend reading our detailed step-by-step guide on the AIMMS Community:
 
-The problem was proposed as part of the `15th Annual AIMMS-MOPTA Optimization Modeling Competition <https://coral.ise.lehigh.edu/~mopta2023/competition>`_.
+👉 **[Read the Full Article: EV Charging Location Guide](https://how-to.aimms.com/Articles/655/655-ev-location.html)**
+
+### Prerequisites
+- **AIMMS:** You will need AIMMS installed to run the model. [Download the Free Academic Edition here](https://www.aimms.com/support/licensing/).
+- **WebUI:** This application makes extensive use of the Map Widget and data-dependent CSS styling to visualize the "swarm" of potential solutions.
+
+### Technical Highlights
+- **Particle Swarm Optimization (PSO):** Implements the Vulture algorithm to navigate non-linear, non-convex search spaces.
+- **Geospatial Optimization:** Uses real-time adjustments of "particles" (stations) as they converge toward an optimal configuration.
+- **Capacity Constraints:** Manages complex limits, such as a maximum of eight chargers per station and vehicle range decay functions.
+
+
+
+## 🚀 Getting Started
+
+1. **Download the Release:** Go to the [Releases](https://github.com/aimms/ev-charging-locations/releases) page and download the `.zip` file.
+2. **Open the Project:** Launch the `.aimms` file.
+3. **Run the PSO:** Use the WebUI workflow to initialize the problem and watch the algorithm iterate through generations on the map.
+4. **Compare Scenarios:** Adjust maintenance costs or vehicle ranges using sliders to see how the optimal layout shifts.
+
+## 🤝 Support & Feedback
+
+This example is maintained by the **AIMMS User Support Team**.
+- Found an issue? [Open an issue](https://github.com/aimms/ev-charging-locations/issues).
+- Questions? Reach out via the [AIMMS Community](https://community.aimms.com).
+
+---
+*Maintained by the AIMMS User Support Team. We optimize the way you build optimization.*
