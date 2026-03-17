@@ -1,21 +1,28 @@
 ## ams_version=1.0
 
 LibraryModule UserInterface {
+	Comment: "Documentation for librarymodule UserInterface";
 	Prefix: ui;
 	Interface: UserInterface;
 	StringParameter sp_def_readOnly {
+		Comment: "Documentation for stringparameter sp_def_readOnly";
 		Definition: "readonly";
 	}
 	StringParameter sp_def_logo {
+		Comment: "Documentation for stringparameter sp_def_logo";
 		Definition: "aimms_logo.png";
 	}
 	Section System {
+		Comment: "Documentation for section System";
 		DeclarationSection System_Workflow {
+			Comment: "Documentation for declarationsection System_Workflow";
 			StringParameter sp_systemWorkflow {
+				Comment: "Documentation for stringparameter sp_systemWorkflow";
 				IndexDomain: (webui::indexWorkflowOrder,webui::indexWorkflowSpec);
 				Definition: data { ( 1, title ) : "" };
 			}
 			StringParameter sp_systemWorkflowSteps {
+				Comment: "Documentation for stringparameter sp_systemWorkflowSteps";
 				IndexDomain: (webui::indexWorkflowOrder,webui::indexNoOfPages,webui::indexWorkflowPageSpec);
 				Definition: {
 					data 
@@ -42,47 +49,68 @@ LibraryModule UserInterface {
 				}
 			}
 			StringParameter sp_systemWorkflowFoldingStates {
+				Comment: "Documentation for stringparameter sp_systemWorkflowFoldingStates";
 				IndexDomain: (webui::indexWorkflowOrder,webui::indexNoOfPages,webui::indexOpenCloseProps);
 			}
 		}
 		DeclarationSection System_Page_Action {
+			Comment: "Documentation for declarationsection System_Page_Action";
 			StringParameter sp_systemSecondaryActions {
+				Comment: "Documentation for stringparameter sp_systemSecondaryActions";
 				IndexDomain: (webui::indexPageExtension,webui::indexPageActionSpec);
 			}
 		}
 		Procedure pr_yToLatitude {
+			Comment: "Documentation for procedure pr_yToLatitude";
 			Arguments: (p_in_y,p_in_maxY,p_out_latitude);
 			Body: {
+				! Executing operations for body logic
 				p_loc_auxiliar := p_in_y * (p_def_maxLatitude - p_def_minLatitude) /$ p_in_maxY;
 				p_out_latitude := p_loc_auxiliar + p_def_minLatitude;
 			}
 			Parameter p_in_y {
+				Comment: "Documentation for parameter p_in_y";
 				Property: Input;
 			}
 			Parameter p_out_latitude {
+				Comment: "Documentation for parameter p_out_latitude";
 				Property: Output;
 			}
-			Parameter p_loc_auxiliar;
-			Parameter p_in_maxY;
+			Parameter p_loc_auxiliar {
+				Comment: "Documentation for parameter p_loc_auxiliar";
+			}
+			Parameter p_in_maxY {
+				Comment: "Documentation for parameter p_in_maxY";
+			}
 		}
 		Procedure pr_xToLongitude {
+			Comment: "Documentation for procedure pr_xToLongitude";
 			Arguments: (p_in_x,p_in_maxX,p_out_longitude);
 			Body: {
+				! Executing operations for body logic
 				p_loc_auxiliar := p_in_x * (p_def_maxLongitude - p_def_minLongitude) /$ p_in_maxX;
 				p_out_longitude := p_loc_auxiliar + p_def_minLongitude;
 			}
 			Parameter p_in_x {
+				Comment: "Documentation for parameter p_in_x";
 				Property: Input;
 			}
-			Parameter p_in_maxX;
+			Parameter p_in_maxX {
+				Comment: "Documentation for parameter p_in_maxX";
+			}
 			Parameter p_out_longitude {
+				Comment: "Documentation for parameter p_out_longitude";
 				Property: Output;
 			}
-			Parameter p_loc_auxiliar;
+			Parameter p_loc_auxiliar {
+				Comment: "Documentation for parameter p_loc_auxiliar";
+			}
 		}
 	}
 	Section Pages {
+		Comment: "Documentation for section Pages";
 		Procedure pr_readDefaultData {
+			Comment: "Documentation for procedure pr_readDefaultData";
 			Body: {
 				dex::GenerateDatasetMappings;
 				dex::ReadAllMappings;
@@ -92,13 +120,17 @@ LibraryModule UserInterface {
 			}
 		}
 		Section Control_Panel_Page {
+			Comment: "Documentation for section Control_Panel_Page";
 			StringParameter sp_def_problemTitle {
+				Comment: "Documentation for stringparameter sp_def_problemTitle";
 				Definition: "Problem Parameters";
 			}
 			StringParameter sp_def_algorithmTitle {
+				Comment: "Documentation for stringparameter sp_def_algorithmTitle";
 				Definition: "Algorithm Parameters";
 			}
 			StringParameter sp_def_controlPanelPrimaryPageAction {
+				Comment: "Documentation for stringparameter sp_def_controlPanelPrimaryPageAction";
 				IndexDomain: webui::indexPageActionSpec;
 				Definition: {
 					data 
@@ -107,13 +139,18 @@ LibraryModule UserInterface {
 				}
 			}
 		}
-		Section Progress_Page;
+		Section Progress_Page {
+			Comment: "Documentation for section Progress_Page";
+		}
 		Section Results_Page {
+			Comment: "Documentation for section Results_Page";
 			Set s_histogramSlices {
+				Comment: "Documentation for set s_histogramSlices";
 				Index: i_slice;
 				Parameter: ep_histogramSlice;
 			}
 			Set s_histogramDistanceToStationSlices {
+				Comment: "Documentation for set s_histogramDistanceToStationSlices";
 				SubsetOf: s_histogramSlices;
 				Index: i_sliceDistanceToStation;
 				Definition: {
@@ -122,6 +159,7 @@ LibraryModule UserInterface {
 				webui::ElementTextIdentifier: sp_distanceToStationSliceDescription(ui::i_slice);
 			}
 			Set s_histogramNumberOfVehiclesSlices {
+				Comment: "Documentation for set s_histogramNumberOfVehiclesSlices";
 				SubsetOf: s_histogramSlices;
 				Index: i_sliceNumberOfVehicles;
 				Definition: {
@@ -129,44 +167,57 @@ LibraryModule UserInterface {
 				}
 				webui::ElementTextIdentifier: sp_numberOfVehiclesSliceDescription(ui::i_slice);
 			}
-			Parameter p_histogramSlices;
+			Parameter p_histogramSlices {
+				Comment: "Documentation for parameter p_histogramSlices";
+			}
 			Parameter p_distanceToStationHistogram {
+				Comment: "Documentation for parameter p_distanceToStationHistogram";
 				IndexDomain: i_slice;
 				webui::AnnotationsIdentifier: sp_histogramAnnotation;
 			}
 			StringParameter sp_distanceToStationSliceDescription {
+				Comment: "Documentation for stringparameter sp_distanceToStationSliceDescription";
 				IndexDomain: i_slice;
 				InitialData: "";
 			}
 			Parameter p_numberOfVehiclesHistogram {
+				Comment: "Documentation for parameter p_numberOfVehiclesHistogram";
 				IndexDomain: i_slice;
 				webui::AnnotationsIdentifier: sp_histogramAnnotation;
 			}
 			StringParameter sp_numberOfVehiclesSliceDescription {
+				Comment: "Documentation for stringparameter sp_numberOfVehiclesSliceDescription";
 				IndexDomain: i_slice;
 				InitialData: "";
 			}
 			Parameter p_bestGlobalSolutionLongitude {
+				Comment: "Documentation for parameter p_bestGlobalSolutionLongitude";
 				IndexDomain: (i_particle);
 				Text: "Best global solution X coordinate.";
 			}
 			Parameter p_bestGlobalSolutionLatitude {
+				Comment: "Documentation for parameter p_bestGlobalSolutionLatitude";
 				IndexDomain: (i_particle);
 				Text: "Best global solution Y coordinate.";
 			}
 			StringParameter sp_histogramAnnotation {
+				Comment: "Documentation for stringparameter sp_histogramAnnotation";
 				Definition: "histogram";
 			}
 			StringParameter sp_def_evNodeColor {
+				Comment: "Documentation for stringparameter sp_def_evNodeColor";
 				IndexDomain: i_loc;
 				Definition: "ev";
 			}
 			StringParameter sp_def_stationNodeColor {
+				Comment: "Documentation for stringparameter sp_def_stationNodeColor";
 				IndexDomain: i_particle;
 				Definition: "station";
 			}
 			Procedure pr_calculateSolutionPoints {
+				Comment: "Documentation for procedure pr_calculateSolutionPoints";
 				Body: {
+					! Executing operations for body logic
 					empty p_bestGlobalSolutionLatitude, p_bestGlobalSolutionLongitude;
 					p_loc_maxX := max(i_particle, p_bestGlobalSolutionX(i_particle));
 					p_loc_maxY := max(i_particle, p_bestGlobalSolutionY(i_particle));
@@ -183,10 +234,15 @@ LibraryModule UserInterface {
 					        p_out_latitude  :  p_bestGlobalSolutionLatitude(i_particle));
 					endfor;
 				}
-				Parameter p_loc_maxX;
-				Parameter p_loc_maxY;
+				Parameter p_loc_maxX {
+					Comment: "Documentation for parameter p_loc_maxX";
+				}
+				Parameter p_loc_maxY {
+					Comment: "Documentation for parameter p_loc_maxY";
+				}
 			}
 			Procedure pr_calculateHistograms {
+				Comment: "Documentation for procedure pr_calculateHistograms";
 				Body: {
 					p_histogramSlices := 10;
 					s_histogramSlices := {1 .. 100}; !fixed
@@ -238,11 +294,15 @@ LibraryModule UserInterface {
 					
 					endblock;
 				}
-				Parameter p_loc_histID;
+				Parameter p_loc_histID {
+					Comment: "Documentation for parameter p_loc_histID";
+				}
 				Parameter p_loc_leftBound {
+					Comment: "Documentation for parameter p_loc_leftBound";
 					IndexDomain: i_slice;
 				}
 				Parameter p_loc_rightBound {
+					Comment: "Documentation for parameter p_loc_rightBound";
 					IndexDomain: i_slice;
 				}
 			}
@@ -259,6 +319,7 @@ LibraryModule UserInterface {
 	}
 	Procedure PreLibraryTermination {
 		Body: {
+			! Executing operations for body logic
 			return 1;
 		}
 		Comment: {
@@ -269,6 +330,7 @@ LibraryModule UserInterface {
 	}
 	Procedure LibraryTermination {
 		Body: {
+			! Executing operations for body logic
 			return 1;
 		}
 		Comment: {

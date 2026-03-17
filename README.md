@@ -1,7 +1,7 @@
 # EV Charging Location
 
 [![Downloads](https://img.shields.io/github/downloads/aimms/ev-charging-locations/total?style=for-the-badge&logo=github&labelColor=000081&color=1847c9)](https://github.com/aimms/ev-charging-locations/releases)
-![AIMMS Version](https://img.shields.io/badge/AIMMS-24.5-white?style=for-the-badge&labelColor=009B00&color=00D400)
+![AIMMS Version](https://img.shields.io/badge/AIMMS-25.9-white?style=for-the-badge&labelColor=009B00&color=00D400)
 ![WebUI Version](https://img.shields.io/badge/WebUI-24.12.4.2-white?style=for-the-badge&labelColor=009B00&color=00D400)
 ![WebUI Version](https://img.shields.io/badge/DEX-24.5.1.1-white?style=for-the-badge&labelColor=009B00&color=00D400)
 
